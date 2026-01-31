@@ -41,6 +41,8 @@ const Transactions = () => {
     division: "",
     category: "",
     search: "",
+    startDate: "",
+    endDate: "",
   });
   const [pagination, setPagination] = useState({
     page: 1,
@@ -54,6 +56,7 @@ const Transactions = () => {
     category: "others",
     division: "personal",
     date: format(new Date(), "yyyy-MM-dd"),
+    time: format(new Date(), "HH:mm"),
     account: "",
   });
   const [formError, setFormError] = useState("");
@@ -106,6 +109,7 @@ const Transactions = () => {
       category: "others",
       division: "personal",
       date: format(new Date(), "yyyy-MM-dd"),
+      time: format(new Date(), "HH:mm"),
       account: accounts[0]?._id || "",
     });
     setFormError("");
@@ -125,6 +129,7 @@ const Transactions = () => {
       category: tx.category,
       division: tx.division,
       date: format(new Date(tx.date), "yyyy-MM-dd"),
+      time: format(new Date(tx.date), "HH:mm"),
       account: tx.account?._id || tx.account || "",
     });
     setFormError("");
@@ -144,7 +149,14 @@ const Transactions = () => {
     }
     setSaving(true);
     try {
-      const data = { ...formData, amount: parseFloat(formData.amount) };
+      // Combine date and time into a single ISO date string
+      const dateTime = new Date(`${formData.date}T${formData.time || "00:00"}`);
+      const data = {
+        ...formData,
+        amount: parseFloat(formData.amount),
+        date: dateTime.toISOString(),
+      };
+      delete data.time; // Remove time field as it's now part of date
       if (selectedTransaction)
         await transactionsAPI.update(selectedTransaction._id, data);
       else await transactionsAPI.create(data);
@@ -217,6 +229,38 @@ const Transactions = () => {
             placeholder="Category"
             className="w-40"
           />
+          <div className="flex items-center gap-2">
+            <Input
+              type="date"
+              value={filters.startDate}
+              onChange={(e) =>
+                setFilters({ ...filters, startDate: e.target.value })
+              }
+              placeholder="Start Date"
+              className="w-40"
+            />
+            <span className="text-[#617089]">to</span>
+            <Input
+              type="date"
+              value={filters.endDate}
+              onChange={(e) =>
+                setFilters({ ...filters, endDate: e.target.value })
+              }
+              placeholder="End Date"
+              className="w-40"
+            />
+          </div>
+          {(filters.startDate || filters.endDate) && (
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={() =>
+                setFilters({ ...filters, startDate: "", endDate: "" })
+              }
+            >
+              Clear Dates
+            </Button>
+          )}
         </div>
       </Card>
 
@@ -281,7 +325,10 @@ const Transactions = () => {
                         </span>
                       </td>
                       <td className="py-3 px-4 text-sm text-[#617089]">
-                        {format(new Date(tx.date), "MMM dd, yyyy")}
+                        <div>{format(new Date(tx.date), "MMM dd, yyyy")}</div>
+                        <div className="text-xs">
+                          {format(new Date(tx.date), "hh:mm a")}
+                        </div>
                       </td>
                       <td
                         className={`py-3 px-4 text-right font-bold ${tx.type === "income" ? "text-green-600" : "text-[#111318] dark:text-white"}`}
@@ -291,15 +338,27 @@ const Transactions = () => {
                       </td>
                       <td className="py-3 px-4">
                         <div className="flex justify-center gap-2">
-                          <button
-                            onClick={() => openEditModal(tx)}
-                            disabled={!canEdit(tx)}
-                            className={`p-1.5 rounded-lg ${canEdit(tx) ? "hover:bg-gray-100 dark:hover:bg-white/10 text-[#617089]" : "opacity-30 cursor-not-allowed"}`}
-                          >
-                            <span className="material-symbols-outlined text-[20px]">
-                              edit
-                            </span>
-                          </button>
+                          {canEdit(tx) ? (
+                            <button
+                              onClick={() => openEditModal(tx)}
+                              className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-[#617089]"
+                              title="Edit transaction"
+                            >
+                              <span className="material-symbols-outlined text-[20px]">
+                                edit
+                              </span>
+                            </button>
+                          ) : (
+                            <button
+                              disabled
+                              className="p-1.5 rounded-lg opacity-50 cursor-not-allowed text-[#617089]"
+                              title="Locked - 12 hour edit window expired"
+                            >
+                              <span className="material-symbols-outlined text-[20px]">
+                                lock
+                              </span>
+                            </button>
+                          )}
                           <button
                             onClick={() => openDeleteModal(tx)}
                             className="p-1.5 rounded-lg hover:bg-red-50 text-red-500"
@@ -438,13 +497,21 @@ const Transactions = () => {
               }
             />
           </div>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-3 gap-4">
             <Input
               label="Date"
               type="date"
               value={formData.date}
               onChange={(e) =>
                 setFormData({ ...formData, date: e.target.value })
+              }
+            />
+            <Input
+              label="Time"
+              type="time"
+              value={formData.time}
+              onChange={(e) =>
+                setFormData({ ...formData, time: e.target.value })
               }
             />
             <Select

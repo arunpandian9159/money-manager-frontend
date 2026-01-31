@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { format } from "date-fns";
 import {
   Button,
   Card,
@@ -7,7 +8,7 @@ import {
   Select,
   StatCard,
 } from "../components/common";
-import { accountsAPI } from "../api";
+import { accountsAPI, transactionsAPI } from "../api";
 
 const ACCOUNT_TYPES = [
   { value: "checking", label: "Checking" },
@@ -42,6 +43,9 @@ const Accounts = () => {
   });
   const [formError, setFormError] = useState("");
   const [saving, setSaving] = useState(false);
+  const [historyModalOpen, setHistoryModalOpen] = useState(false);
+  const [accountTransactions, setAccountTransactions] = useState([]);
+  const [loadingTransactions, setLoadingTransactions] = useState(false);
 
   useEffect(() => {
     fetchAccounts();
@@ -60,6 +64,25 @@ const Accounts = () => {
       console.error("Failed to fetch accounts:", err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const openHistoryModal = async (account) => {
+    setSelectedAccount(account);
+    setHistoryModalOpen(true);
+    setLoadingTransactions(true);
+    try {
+      const res = await transactionsAPI.getAll({
+        accountId: account._id,
+        limit: 20,
+        sortBy: "date",
+        sortOrder: "desc",
+      });
+      setAccountTransactions(res.data.transactions || []);
+    } catch (err) {
+      console.error("Failed to fetch account transactions:", err);
+    } finally {
+      setLoadingTransactions(false);
     }
   };
 
@@ -254,6 +277,15 @@ const Accounts = () => {
                   {account.description}
                 </p>
               )}
+              <button
+                onClick={() => openHistoryModal(account)}
+                className="mt-4 w-full flex items-center justify-center gap-2 py-2 px-3 rounded-lg bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 text-sm text-[#617089] transition-colors"
+              >
+                <span className="material-symbols-outlined text-[18px]">
+                  history
+                </span>
+                View Transactions
+              </button>
             </Card>
           ))
         ) : (
@@ -403,6 +435,82 @@ const Accounts = () => {
           </Button>
           <Button variant="danger" fullWidth onClick={handleDelete}>
             Delete
+          </Button>
+        </div>
+      </Modal>
+
+      {/* Account Transaction History Modal */}
+      <Modal
+        isOpen={historyModalOpen}
+        onClose={() => setHistoryModalOpen(false)}
+        title={`Transactions - ${selectedAccount?.name || ""}`}
+        size="lg"
+      >
+        {loadingTransactions ? (
+          <div className="flex justify-center py-8">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+          </div>
+        ) : accountTransactions.length > 0 ? (
+          <div className="max-h-96 overflow-y-auto">
+            <table className="w-full">
+              <thead className="bg-gray-50 dark:bg-white/5 sticky top-0">
+                <tr>
+                  <th className="text-left py-2 px-3 text-sm font-medium text-[#617089]">
+                    Description
+                  </th>
+                  <th className="text-left py-2 px-3 text-sm font-medium text-[#617089]">
+                    Date
+                  </th>
+                  <th className="text-right py-2 px-3 text-sm font-medium text-[#617089]">
+                    Amount
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {accountTransactions.map((tx) => (
+                  <tr
+                    key={tx._id}
+                    className="border-b border-[#f0f2f4] dark:border-gray-800"
+                  >
+                    <td className="py-2 px-3">
+                      <span className="font-medium text-[#111318] dark:text-white text-sm">
+                        {tx.description}
+                      </span>
+                      <span
+                        className={`ml-2 px-1.5 py-0.5 rounded text-xs ${tx.division === "office" ? "bg-blue-50 text-blue-600" : "bg-purple-50 text-purple-600"}`}
+                      >
+                        {tx.division}
+                      </span>
+                    </td>
+                    <td className="py-2 px-3 text-sm text-[#617089]">
+                      <div>{format(new Date(tx.date), "MMM dd, yyyy")}</div>
+                      <div className="text-xs">
+                        {format(new Date(tx.date), "hh:mm a")}
+                      </div>
+                    </td>
+                    <td
+                      className={`py-2 px-3 text-right font-bold text-sm ${tx.type === "income" ? "text-green-600" : "text-red-600"}`}
+                    >
+                      {tx.type === "income" ? "+" : "-"}₹
+                      {tx.amount?.toLocaleString()}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <p className="text-center py-8 text-[#617089]">
+            No transactions found for this account.
+          </p>
+        )}
+        <div className="mt-4">
+          <Button
+            variant="secondary"
+            fullWidth
+            onClick={() => setHistoryModalOpen(false)}
+          >
+            Close
           </Button>
         </div>
       </Modal>
