@@ -52,6 +52,7 @@ const Reports = () => {
       const params = {
         startDate: dateRange.startDate,
         endDate: dateRange.endDate,
+        groupBy: "month",
       };
       const [summaryRes, categoryRes, divisionRes, trendsRes] =
         await Promise.all([
@@ -61,9 +62,11 @@ const Reports = () => {
           reportsAPI.getTrends(params),
         ]);
 
-      setSummary(summaryRes.data || { totalIncome: 0, totalExpenses: 0 });
-      setCategoryData(categoryRes.data.categories || []);
-      setDivisionData(divisionRes.data.divisions || []);
+      setSummary(
+        summaryRes.data.summary || { totalIncome: 0, totalExpenses: 0 },
+      );
+      setCategoryData(categoryRes.data.breakdown || []);
+      setDivisionData(divisionRes.data.breakdown || []);
       setTrendsData(trendsRes.data.trends || []);
     } catch (error) {
       console.error("Failed to fetch reports data:", error);
@@ -213,8 +216,8 @@ const Reports = () => {
                     innerRadius={60}
                     outerRadius={100}
                     paddingAngle={2}
-                    label={({ _id, percent }) =>
-                      `${_id} (${(percent * 100).toFixed(0)}%)`
+                    label={({ name, percent }) =>
+                      `${name?.replace("_", " ").charAt(0).toUpperCase() + name?.replace("_", " ").slice(1)} (${(percent * 100).toFixed(0)}%)`
                     }
                   >
                     {categoryData.map((entry, index) => (

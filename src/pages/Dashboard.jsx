@@ -20,7 +20,14 @@ import {
   Tooltip,
   Legend,
 } from "recharts";
-import { StatCard, Card, Button, Select, Modal, Input } from "../components/common";
+import {
+  StatCard,
+  Card,
+  Button,
+  Select,
+  Modal,
+  Input,
+} from "../components/common";
 import { transactionsAPI, reportsAPI, accountsAPI } from "../api";
 
 const CATEGORIES = [
@@ -102,7 +109,10 @@ const Dashboard = () => {
 
     switch (periodValue) {
       case "week":
-        startDate = format(startOfWeek(today, { weekStartsOn: 1 }), "yyyy-MM-dd");
+        startDate = format(
+          startOfWeek(today, { weekStartsOn: 1 }),
+          "yyyy-MM-dd",
+        );
         break;
       case "month":
         startDate = format(startOfMonth(today), "yyyy-MM-dd");
@@ -153,10 +163,10 @@ const Dashboard = () => {
           reportsAPI.getByDivision(dateParams),
         ]);
 
-      setSummary(summaryRes.data);
+      setSummary(summaryRes.data.summary);
       setRecentTransactions(transactionsRes.data.transactions || []);
-      setCategoryData(categoryRes.data.categories || []);
-      setDivisionData(divisionRes.data.divisions || []);
+      setCategoryData(categoryRes.data.breakdown || []);
+      setDivisionData(divisionRes.data.breakdown || []);
     } catch (error) {
       console.error("Failed to fetch dashboard data:", error);
     } finally {
@@ -282,8 +292,8 @@ const Dashboard = () => {
                     cx="50%"
                     cy="50%"
                     outerRadius={80}
-                    label={({ _id, percent }) =>
-                      `${_id} ${(percent * 100).toFixed(0)}%`
+                    label={({ name, percent }) =>
+                      `${name?.replace("_", " ").charAt(0).toUpperCase() + name?.replace("_", " ").slice(1)} ${(percent * 100).toFixed(0)}%`
                     }
                   >
                     {categoryData.map((entry, index) => (
@@ -460,7 +470,9 @@ const Dashboard = () => {
             label="Amount"
             type="number"
             value={formData.amount}
-            onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, amount: e.target.value })
+            }
             placeholder="0.00"
             required
           />
@@ -500,13 +512,17 @@ const Dashboard = () => {
               label="Date"
               type="date"
               value={formData.date}
-              onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, date: e.target.value })
+              }
             />
             <Input
               label="Time"
               type="time"
               value={formData.time}
-              onChange={(e) => setFormData({ ...formData, time: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, time: e.target.value })
+              }
             />
             <Select
               label="Account"

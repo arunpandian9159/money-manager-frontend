@@ -59,7 +59,9 @@ const Accounts = () => {
         accountsAPI.getSummary(),
       ]);
       setAccounts(accountsRes.data.accounts || []);
-      setSummary(summaryRes.data || { totalBalance: 0, accountCount: 0 });
+      setSummary(
+        summaryRes.data.summary || { totalBalance: 0, accountCount: 0 },
+      );
     } catch (err) {
       console.error("Failed to fetch accounts:", err);
     } finally {
