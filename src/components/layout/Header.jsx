@@ -1,16 +1,16 @@
-import { useState } from 'react'
-import { useAuth } from '../../context/AuthContext'
+import { useState } from "react";
+import { useAuth } from "../../context/AuthContext";
 
 const Header = ({ onSearch }) => {
-  const { user } = useAuth()
-  const [searchQuery, setSearchQuery] = useState('')
+  const { user } = useAuth();
+  const [searchQuery, setSearchQuery] = useState("");
 
   const handleSearch = (e) => {
-    setSearchQuery(e.target.value)
+    setSearchQuery(e.target.value);
     if (onSearch) {
-      onSearch(e.target.value)
+      onSearch(e.target.value);
     }
-  }
+  };
 
   return (
     <header className="h-16 bg-white dark:bg-[#1a2332] border-b border-[#f0f2f4] dark:border-gray-800 flex items-center justify-between px-8 shrink-0">
@@ -18,7 +18,9 @@ const Header = ({ onSearch }) => {
       <div className="w-[400px]">
         <div className="relative flex w-full items-center h-10 rounded-lg focus-within:ring-2 ring-primary/20 transition-all">
           <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-[#617089]">
-            <span className="material-symbols-outlined text-[20px]">search</span>
+            <span className="material-symbols-outlined text-[20px]">
+              search
+            </span>
           </div>
           <input
             type="text"
@@ -47,13 +49,13 @@ const Header = ({ onSearch }) => {
             <p className="text-xs text-[#617089]">Pro Plan</p>
           </div>
           <div className="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold border-2 border-white dark:border-gray-700 shadow-sm">
-            {user?.firstName?.[0]}{user?.lastName?.[0]}
+            {user?.firstName?.[0]}
+            {user?.lastName?.[0]}
           </div>
         </div>
       </div>
     </header>
-  )
-}
+  );
+};
 
-export default Header
-
+export default Header;

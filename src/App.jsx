@@ -1,57 +1,57 @@
-import { Routes, Route, Navigate } from 'react-router-dom'
-import { useAuth } from './context/AuthContext'
+import { Routes, Route, Navigate } from "react-router-dom";
+import { useAuth } from "./context/AuthContext";
 
 // Layouts
-import MainLayout from './components/layout/MainLayout'
-import AuthLayout from './components/layout/AuthLayout'
+import MainLayout from "./components/layout/MainLayout";
+import AuthLayout from "./components/layout/AuthLayout";
 
 // Pages
-import Home from './pages/Home'
-import Login from './pages/Login'
-import Register from './pages/Register'
-import Dashboard from './pages/Dashboard'
-import Transactions from './pages/Transactions'
-import Reports from './pages/Reports'
-import Accounts from './pages/Accounts'
-import Settings from './pages/Settings'
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import Dashboard from "./pages/Dashboard";
+import Transactions from "./pages/Transactions";
+import Reports from "./pages/Reports";
+import Accounts from "./pages/Accounts";
+import Settings from "./pages/Settings";
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
-  const { user, loading } = useAuth()
+  const { user, loading } = useAuth();
 
   if (loading) {
     return (
       <div className="flex h-screen items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
       </div>
-    )
+    );
   }
 
   if (!user) {
-    return <Navigate to="/login" replace />
+    return <Navigate to="/login" replace />;
   }
 
-  return children
-}
+  return children;
+};
 
 // Public Route Component (redirect to dashboard if logged in)
 const PublicRoute = ({ children }) => {
-  const { user, loading } = useAuth()
+  const { user, loading } = useAuth();
 
   if (loading) {
     return (
       <div className="flex h-screen items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
       </div>
-    )
+    );
   }
 
   if (user) {
-    return <Navigate to="/app/dashboard" replace />
+    return <Navigate to="/app/dashboard" replace />;
   }
 
-  return children
-}
+  return children;
+};
 
 function App() {
   return (
@@ -106,17 +106,28 @@ function App() {
       </Route>
 
       {/* Legacy routes - redirect to /app/* */}
-      <Route path="/dashboard" element={<Navigate to="/app/dashboard" replace />} />
-      <Route path="/transactions" element={<Navigate to="/app/transactions" replace />} />
+      <Route
+        path="/dashboard"
+        element={<Navigate to="/app/dashboard" replace />}
+      />
+      <Route
+        path="/transactions"
+        element={<Navigate to="/app/transactions" replace />}
+      />
       <Route path="/reports" element={<Navigate to="/app/reports" replace />} />
-      <Route path="/accounts" element={<Navigate to="/app/accounts" replace />} />
-      <Route path="/settings" element={<Navigate to="/app/settings" replace />} />
+      <Route
+        path="/accounts"
+        element={<Navigate to="/app/accounts" replace />}
+      />
+      <Route
+        path="/settings"
+        element={<Navigate to="/app/settings" replace />}
+      />
 
       {/* Catch all - redirect to home */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
-  )
+  );
 }
 
-export default App
-
+export default App;

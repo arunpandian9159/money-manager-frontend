@@ -1,36 +1,36 @@
-import { useEffect } from 'react'
+import { useEffect } from "react";
 
 const Modal = ({
   isOpen,
   onClose,
   title,
   children,
-  size = 'md',
-  showCloseButton = true
+  size = "md",
+  showCloseButton = true,
 }) => {
   // Close on escape key
   useEffect(() => {
     const handleEscape = (e) => {
-      if (e.key === 'Escape') onClose()
-    }
+      if (e.key === "Escape") onClose();
+    };
     if (isOpen) {
-      document.addEventListener('keydown', handleEscape)
-      document.body.style.overflow = 'hidden'
+      document.addEventListener("keydown", handleEscape);
+      document.body.style.overflow = "hidden";
     }
     return () => {
-      document.removeEventListener('keydown', handleEscape)
-      document.body.style.overflow = 'unset'
-    }
-  }, [isOpen, onClose])
+      document.removeEventListener("keydown", handleEscape);
+      document.body.style.overflow = "unset";
+    };
+  }, [isOpen, onClose]);
 
-  if (!isOpen) return null
+  if (!isOpen) return null;
 
   const sizes = {
-    sm: 'max-w-md',
-    md: 'max-w-lg',
-    lg: 'max-w-2xl',
-    xl: 'max-w-4xl'
-  }
+    sm: "max-w-md",
+    md: "max-w-lg",
+    lg: "max-w-2xl",
+    xl: "max-w-4xl",
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
@@ -41,17 +41,21 @@ const Modal = ({
       />
 
       {/* Modal Content */}
-      <div className={`
+      <div
+        className={`
         relative z-10 w-full ${sizes[size]} mx-4
         bg-white dark:bg-[#1a2332] rounded-xl shadow-2xl
         transform transition-all
         animate-in fade-in zoom-in-95 duration-200
-      `}>
+      `}
+      >
         {/* Header */}
         {(title || showCloseButton) && (
           <div className="flex items-center justify-between p-6 border-b border-[#f0f2f4] dark:border-gray-800">
             {title && (
-              <h2 className="text-xl font-bold text-[#111318] dark:text-white">{title}</h2>
+              <h2 className="text-xl font-bold text-[#111318] dark:text-white">
+                {title}
+              </h2>
             )}
             {showCloseButton && (
               <button
@@ -65,13 +69,10 @@ const Modal = ({
         )}
 
         {/* Body */}
-        <div className="p-6">
-          {children}
-        </div>
+        <div className="p-6">{children}</div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Modal
-
+export default Modal;

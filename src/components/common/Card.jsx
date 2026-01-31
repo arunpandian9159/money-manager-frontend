@@ -3,7 +3,7 @@ const Card = ({
   title,
   subtitle,
   action,
-  className = '',
+  className = "",
   padding = true,
   ...props
 }) => {
@@ -17,24 +17,23 @@ const Card = ({
       {...props}
     >
       {(title || action) && (
-        <div className={`flex justify-between items-center ${padding ? 'p-6' : 'px-6 py-4'} border-b border-[#f0f2f4] dark:border-gray-800`}>
+        <div
+          className={`flex justify-between items-center ${padding ? "p-6" : "px-6 py-4"} border-b border-[#f0f2f4] dark:border-gray-800`}
+        >
           <div>
             {title && (
-              <h3 className="text-lg font-bold text-[#111318] dark:text-white">{title}</h3>
+              <h3 className="text-lg font-bold text-[#111318] dark:text-white">
+                {title}
+              </h3>
             )}
-            {subtitle && (
-              <p className="text-sm text-[#617089]">{subtitle}</p>
-            )}
+            {subtitle && <p className="text-sm text-[#617089]">{subtitle}</p>}
           </div>
           {action}
         </div>
       )}
-      <div className={padding ? 'p-6' : ''}>
-        {children}
-      </div>
+      <div className={padding ? "p-6" : ""}>{children}</div>
     </div>
-  )
-}
+  );
+};
 
-export default Card
-
+export default Card;
