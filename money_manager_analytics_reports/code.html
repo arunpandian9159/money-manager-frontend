@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Money Manager Analytics Reports</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Config -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1d69ed",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101722",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar for cleaner look */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        .dark ::-webkit-scrollbar-thumb {
+            background: #334155;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-white h-screen overflow-hidden flex selection:bg-primary/20">
+<!-- Sidebar -->
+<aside class="w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex flex-col h-full shrink-0 z-20">
+<div class="p-6 pb-2">
+<div class="flex items-center gap-3">
+<div class="bg-center bg-no-repeat bg-cover rounded-full size-10 shadow-sm border border-slate-100 dark:border-slate-700" data-alt="Money Manager Logo showing abstract financial graph" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCM7BmD_HmuQ0eLAGbr8tAMizJsabBbiqlibzsE4QFwYWaKuKnFFzbNOpPGQKfbQlpmDz6ewER3Or1xSAOj6Fm4YTOq8UFHEggZo4F9vKBRJ1HP_vuDCzEdy9jehmSAZ6lpm2bYuzHOJ5lMtqicPmC_0l_u23bDK6emx8FwgVGzFZQYXQbi9KKOktw9mPKc-UenyW0DZds_R2FDXfvfk0_Najfm9C2UQr0yFTnBpRy61eUBjn2oCj-VipTguVfhpqkklPcbp7W62p0O");'></div>
+<div class="flex flex-col">
+<h1 class="text-slate-900 dark:text-white text-base font-bold leading-tight">Money Manager</h1>
+<p class="text-slate-500 dark:text-slate-400 text-xs font-medium">Pro Plan</p>
+</div>
+</div>
+</div>
+<nav class="flex-1 overflow-y-auto px-4 py-6 flex flex-col gap-2">
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group" href="#">
+<span class="material-symbols-outlined text-[24px] group-hover:text-primary transition-colors">dashboard</span>
+<span class="text-sm font-medium">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group" href="#">
+<span class="material-symbols-outlined text-[24px] group-hover:text-primary transition-colors">receipt_long</span>
+<span class="text-sm font-medium">Transactions</span>
+</a>
+<!-- Active State -->
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-primary/10 text-primary dark:text-blue-400" href="#">
+<span class="material-symbols-outlined text-[24px] font-variation-fill">bar_chart</span>
+<span class="text-sm font-bold">Reports</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group" href="#">
+<span class="material-symbols-outlined text-[24px] group-hover:text-primary transition-colors">settings</span>
+<span class="text-sm font-medium">Settings</span>
+</a>
+</nav>
+<div class="p-4 border-t border-slate-200 dark:border-slate-800">
+<button class="flex items-center gap-3 w-full px-3 py-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+<div class="bg-center bg-no-repeat bg-cover rounded-full size-8" data-alt="User profile picture of a smiling person" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDZXljh0xzEPC4I1_uCcUT_HPl2H-Wj2Bkp7AW47vFjkI_4m7Y1y-GZbQQ90obzh5i9XGhqQ8wBgK7HshCCIDL3mu7SB14yBCHTyR6EVntfdqgcbBbOJnrbjC8DUKzrLpiDwVF3GntfE8Pn0dvDmL4WGrV7vSbBl59X4qmWwN1e37WpqsOR3ncgJxapJX8V2o8oiWT56nniZByiN5rGnU1UzZVwaWDaAZbs754ETYMxNhWQBfVrZ_SpvTinMC45hmb6WGZqKFmvyBxj");'></div>
+<div class="flex flex-col items-start">
+<p class="text-sm font-medium text-slate-900 dark:text-white">Alex Morgan</p>
+<p class="text-xs text-slate-500 dark:text-slate-400">alex@example.com</p>
+</div>
+</button>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 flex flex-col h-full overflow-hidden relative">
+<!-- Top Header -->
+<header class="h-16 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-8 shrink-0">
+<!-- Breadcrumbs -->
+<div class="flex items-center gap-2 text-sm">
+<a class="text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200" href="#">Home</a>
+<span class="text-slate-400">/</span>
+<span class="font-medium text-slate-900 dark:text-white">Analytics</span>
+</div>
+<!-- Header Actions -->
+<div class="flex items-center gap-4">
+<div class="relative">
+<span class="absolute top-2.5 left-3 text-slate-400 material-symbols-outlined text-[20px]">search</span>
+<input class="pl-10 pr-4 py-2 bg-slate-50 dark:bg-slate-800 border-none rounded-lg text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-primary w-64 placeholder-slate-400" placeholder="Search reports..." type="text"/>
+</div>
+<button class="relative p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 size-2 bg-red-500 rounded-full border-2 border-white dark:border-slate-900"></span>
+</button>
+</div>
+</header>
+<!-- Scrollable Content Area -->
+<div class="flex-1 overflow-y-auto p-8">
+<div class="max-w-7xl mx-auto flex flex-col gap-8">
+<!-- Page Title & Controls -->
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+<div>
+<h1 class="text-2xl font-bold text-slate-900 dark:text-white">Reports &amp; Analytics</h1>
+<p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Monitor your financial health and spending patterns.</p>
+</div>
+<div class="flex flex-wrap items-center gap-3 bg-white dark:bg-slate-900 p-1.5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+<!-- Date Picker Mockup -->
+<button class="flex items-center gap-2 px-3 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg">
+<span class="material-symbols-outlined text-[18px]">calendar_today</span>
+                            Jan 1 - Jan 31, 2023
+                            <span class="material-symbols-outlined text-[18px]">arrow_drop_down</span>
+</button>
+<div class="w-px h-6 bg-slate-200 dark:bg-slate-700 mx-1"></div>
+<!-- Division Tabs -->
+<div class="flex bg-slate-100 dark:bg-slate-800 rounded-lg p-1">
+<button class="px-3 py-1.5 text-xs font-semibold rounded bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm transition-all">All</button>
+<button class="px-3 py-1.5 text-xs font-medium rounded text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 transition-all">Office</button>
+<button class="px-3 py-1.5 text-xs font-medium rounded text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 transition-all">Personal</button>
+</div>
+<div class="w-px h-6 bg-slate-200 dark:bg-slate-700 mx-1"></div>
+<!-- Export Button -->
+<button class="bg-primary hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold flex items-center gap-2 transition-colors">
+<span class="material-symbols-outlined text-[18px]">download</span>
+                            Export
+                        </button>
+</div>
+</div>
+<!-- KPI Cards -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Income Card -->
+<div class="bg-white dark:bg-slate-900 rounded-xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between h-40">
+<div class="flex justify-between items-start">
+<div>
+<p class="text-slate-500 dark:text-slate-400 text-sm font-medium mb-1">Total Income</p>
+<h3 class="text-3xl font-bold text-slate-900 dark:text-white tracking-tight">$12,450.00</h3>
+</div>
+<span class="flex items-center text-xs font-bold text-emerald-600 bg-emerald-50 dark:bg-emerald-900/30 px-2 py-1 rounded-full">
+<span class="material-symbols-outlined text-[14px] mr-1">trending_up</span>
+                                5.2%
+                            </span>
+</div>
+<!-- Sparkline SVG -->
+<div class="w-full h-12 mt-4">
+<svg class="w-full h-full text-emerald-500 stroke-current fill-none" preserveaspectratio="none" viewbox="0 0 100 40">
+<path d="M0 35 Q10 25 20 28 T40 20 T60 15 T80 5 T100 10" stroke-width="2" vector-effect="non-scaling-stroke"></path>
+<path class="fill-emerald-500/10 stroke-none" d="M0 35 Q10 25 20 28 T40 20 T60 15 T80 5 T100 10 V40 H0 Z"></path>
+</svg>
+</div>
+</div>
+<!-- Expenses Card -->
+<div class="bg-white dark:bg-slate-900 rounded-xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between h-40">
+<div class="flex justify-between items-start">
+<div>
+<p class="text-slate-500 dark:text-slate-400 text-sm font-medium mb-1">Total Expenses</p>
+<h3 class="text-3xl font-bold text-slate-900 dark:text-white tracking-tight">$8,200.00</h3>
+</div>
+<span class="flex items-center text-xs font-bold text-emerald-600 bg-emerald-50 dark:bg-emerald-900/30 px-2 py-1 rounded-full">
+<span class="material-symbols-outlined text-[14px] mr-1">trending_down</span>
+                                1.2%
+                            </span>
+</div>
+<!-- Sparkline SVG -->
+<div class="w-full h-12 mt-4">
+<svg class="w-full h-full text-emerald-500 stroke-current fill-none" preserveaspectratio="none" viewbox="0 0 100 40">
+<path d="M0 20 Q10 25 20 22 T40 28 T60 30 T80 35 T100 32" stroke-width="2" vector-effect="non-scaling-stroke"></path>
+<path class="fill-emerald-500/10 stroke-none" d="M0 20 Q10 25 20 22 T40 28 T60 30 T80 35 T100 32 V40 H0 Z"></path>
+</svg>
+</div>
+</div>
+<!-- Net Savings Card -->
+<div class="bg-white dark:bg-slate-900 rounded-xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between h-40 ring-1 ring-primary/20">
+<div class="flex justify-between items-start">
+<div>
+<p class="text-slate-500 dark:text-slate-400 text-sm font-medium mb-1">Net Savings</p>
+<h3 class="text-3xl font-bold text-primary tracking-tight">$4,250.00</h3>
+</div>
+<span class="flex items-center text-xs font-bold text-emerald-600 bg-emerald-50 dark:bg-emerald-900/30 px-2 py-1 rounded-full">
+<span class="material-symbols-outlined text-[14px] mr-1">trending_up</span>
+                                12%
+                            </span>
+</div>
+<!-- Sparkline SVG -->
+<div class="w-full h-12 mt-4">
+<svg class="w-full h-full text-primary stroke-current fill-none" preserveaspectratio="none" viewbox="0 0 100 40">
+<path d="M0 38 Q10 35 20 30 T40 20 T60 15 T80 8 T100 2" stroke-width="2" vector-effect="non-scaling-stroke"></path>
+<path class="fill-primary/10 stroke-none" d="M0 38 Q10 35 20 30 T40 20 T60 15 T80 8 T100 2 V40 H0 Z"></path>
+</svg>
+</div>
+</div>
+</div>
+<!-- Charts Section -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+<!-- Bar Chart Card -->
+<div class="bg-white dark:bg-slate-900 rounded-xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col">
+<div class="flex items-center justify-between mb-6">
+<h3 class="text-lg font-bold text-slate-900 dark:text-white">Monthly Comparison</h3>
+<div class="flex items-center gap-2">
+<div class="flex items-center gap-1">
+<div class="size-3 rounded-full bg-primary"></div>
+<span class="text-xs text-slate-500 dark:text-slate-400">Office</span>
+</div>
+<div class="flex items-center gap-1">
+<div class="size-3 rounded-full bg-slate-200 dark:bg-slate-700"></div>
+<span class="text-xs text-slate-500 dark:text-slate-400">Personal</span>
+</div>
+</div>
+</div>
+<!-- CSS Bar Chart Implementation -->
+<div class="flex-1 flex items-end justify-between gap-2 h-64 px-2">
+<!-- Bar 1 -->
+<div class="flex flex-col items-center gap-2 w-full group cursor-pointer">
+<div class="w-full max-w-[40px] flex flex-col gap-1 h-full justify-end relative">
+<div class="w-full bg-slate-200 dark:bg-slate-700 rounded-t-sm h-[30%] group-hover:bg-slate-300 transition-colors"></div>
+<div class="w-full bg-primary rounded-b-sm h-[40%] group-hover:bg-blue-600 transition-colors"></div>
+</div>
+<span class="text-xs text-slate-400">Aug</span>
+</div>
+<!-- Bar 2 -->
+<div class="flex flex-col items-center gap-2 w-full group cursor-pointer">
+<div class="w-full max-w-[40px] flex flex-col gap-1 h-full justify-end relative">
+<div class="w-full bg-slate-200 dark:bg-slate-700 rounded-t-sm h-[25%] group-hover:bg-slate-300 transition-colors"></div>
+<div class="w-full bg-primary rounded-b-sm h-[45%] group-hover:bg-blue-600 transition-colors"></div>
+</div>
+<span class="text-xs text-slate-400">Sep</span>
+</div>
+<!-- Bar 3 -->
+<div class="flex flex-col items-center gap-2 w-full group cursor-pointer">
+<div class="w-full max-w-[40px] flex flex-col gap-1 h-full justify-end relative">
+<div class="w-full bg-slate-200 dark:bg-slate-700 rounded-t-sm h-[40%] group-hover:bg-slate-300 transition-colors"></div>
+<div class="w-full bg-primary rounded-b-sm h-[35%] group-hover:bg-blue-600 transition-colors"></div>
+</div>
+<span class="text-xs text-slate-400">Oct</span>
+</div>
+<!-- Bar 4 -->
+<div class="flex flex-col items-center gap-2 w-full group cursor-pointer">
+<div class="w-full max-w-[40px] flex flex-col gap-1 h-full justify-end relative">
+<div class="w-full bg-slate-200 dark:bg-slate-700 rounded-t-sm h-[20%] group-hover:bg-slate-300 transition-colors"></div>
+<div class="w-full bg-primary rounded-b-sm h-[60%] group-hover:bg-blue-600 transition-colors"></div>
+</div>
+<span class="text-xs text-slate-400 font-bold text-primary">Nov</span>
+</div>
+<!-- Bar 5 -->
+<div class="flex flex-col items-center gap-2 w-full group cursor-pointer">
+<div class="w-full max-w-[40px] flex flex-col gap-1 h-full justify-end relative">
+<div class="w-full bg-slate-200 dark:bg-slate-700 rounded-t-sm h-[35%] group-hover:bg-slate-300 transition-colors"></div>
+<div class="w-full bg-primary rounded-b-sm h-[50%] group-hover:bg-blue-600 transition-colors"></div>
+</div>
+<span class="text-xs text-slate-400">Dec</span>
+</div>
+<!-- Bar 6 -->
+<div class="flex flex-col items-center gap-2 w-full group cursor-pointer">
+<div class="w-full max-w-[40px] flex flex-col gap-1 h-full justify-end relative">
+<div class="w-full bg-slate-200 dark:bg-slate-700 rounded-t-sm h-[15%] group-hover:bg-slate-300 transition-colors"></div>
+<div class="w-full bg-primary rounded-b-sm h-[20%] group-hover:bg-blue-600 transition-colors"></div>
+</div>
+<span class="text-xs text-slate-400">Jan</span>
+</div>
+</div>
+</div>
+<!-- Pie Chart Card -->
+<div class="bg-white dark:bg-slate-900 rounded-xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col">
+<div class="flex items-center justify-between mb-6">
+<h3 class="text-lg font-bold text-slate-900 dark:text-white">Income Sources</h3>
+<button class="text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">more_horiz</span>
+</button>
+</div>
+<div class="flex-1 flex flex-col sm:flex-row items-center justify-center gap-8 h-64">
+<!-- CSS Pie Chart -->
+<div class="relative size-48 rounded-full" style="background: conic-gradient(#1d69ed 0% 45%, #3b82f6 45% 70%, #93c5fd 70% 85%, #e2e8f0 85% 100%);">
+<!-- Inner Circle for Donut Effect -->
+<div class="absolute inset-4 bg-white dark:bg-slate-900 rounded-full flex items-center justify-center flex-col">
+<span class="text-xs text-slate-500 font-medium">Total</span>
+<span class="text-xl font-bold text-slate-900 dark:text-white">$12.4k</span>
+</div>
+</div>
+<!-- Legend -->
+<div class="flex flex-col gap-3 min-w-[140px]">
+<div class="flex items-center justify-between gap-2">
+<div class="flex items-center gap-2">
+<div class="size-3 rounded-full bg-primary"></div>
+<span class="text-sm text-slate-600 dark:text-slate-300">Salary</span>
+</div>
+<span class="text-sm font-bold text-slate-900 dark:text-white">45%</span>
+</div>
+<div class="flex items-center justify-between gap-2">
+<div class="flex items-center gap-2">
+<div class="size-3 rounded-full bg-blue-500"></div>
+<span class="text-sm text-slate-600 dark:text-slate-300">Freelance</span>
+</div>
+<span class="text-sm font-bold text-slate-900 dark:text-white">25%</span>
+</div>
+<div class="flex items-center justify-between gap-2">
+<div class="flex items-center gap-2">
+<div class="size-3 rounded-full bg-blue-300"></div>
+<span class="text-sm text-slate-600 dark:text-slate-300">Investments</span>
+</div>
+<span class="text-sm font-bold text-slate-900 dark:text-white">15%</span>
+</div>
+<div class="flex items-center justify-between gap-2">
+<div class="flex items-center gap-2">
+<div class="size-3 rounded-full bg-slate-200"></div>
+<span class="text-sm text-slate-600 dark:text-slate-300">Other</span>
+</div>
+<span class="text-sm font-bold text-slate-900 dark:text-white">15%</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Detailed Breakdown Table -->
+<div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+<div class="px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center">
+<h3 class="text-lg font-bold text-slate-900 dark:text-white">Category Breakdown</h3>
+<a class="text-sm font-semibold text-primary hover:text-blue-600 transition-colors" href="#">View All</a>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-slate-50 dark:bg-slate-800/50 text-slate-500 dark:text-slate-400 text-xs uppercase tracking-wider font-semibold">
+<th class="px-6 py-4">Category</th>
+<th class="px-6 py-4">Amount Spent</th>
+<th class="px-6 py-4 w-1/3">% of Total</th>
+<th class="px-6 py-4 text-center">Transactions</th>
+<th class="px-6 py-4 text-right">Trend</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-100 dark:divide-slate-800 text-sm">
+<!-- Row 1 -->
+<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="size-10 rounded-lg bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center text-orange-600 dark:text-orange-400">
+<span class="material-symbols-outlined">shopping_cart</span>
+</div>
+<div>
+<p class="font-semibold text-slate-900 dark:text-white">Office Supplies</p>
+<p class="text-xs text-slate-500">Business Expense</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 font-mono font-medium text-slate-700 dark:text-slate-300">$1,200.00</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="flex-1 h-2 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
+<div class="h-full bg-orange-500 w-[40%] rounded-full"></div>
+</div>
+<span class="text-xs font-bold text-slate-600 dark:text-slate-400">40%</span>
+</div>
+</td>
+<td class="px-6 py-4 text-center text-slate-600 dark:text-slate-400">12</td>
+<td class="px-6 py-4 text-right">
+<span class="inline-flex items-center text-xs font-bold text-rose-500">
+<span class="material-symbols-outlined text-[16px] mr-0.5">arrow_upward</span>
+                                            8.5%
+                                        </span>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="size-10 rounded-lg bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center text-purple-600 dark:text-purple-400">
+<span class="material-symbols-outlined">cloud_download</span>
+</div>
+<div>
+<p class="font-semibold text-slate-900 dark:text-white">Software Subscriptions</p>
+<p class="text-xs text-slate-500">SaaS &amp; Cloud</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 font-mono font-medium text-slate-700 dark:text-slate-300">$450.00</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="flex-1 h-2 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
+<div class="h-full bg-purple-500 w-[15%] rounded-full"></div>
+</div>
+<span class="text-xs font-bold text-slate-600 dark:text-slate-400">15%</span>
+</div>
+</td>
+<td class="px-6 py-4 text-center text-slate-600 dark:text-slate-400">4</td>
+<td class="px-6 py-4 text-right">
+<span class="inline-flex items-center text-xs font-bold text-emerald-500">
+<span class="material-symbols-outlined text-[16px] mr-0.5">arrow_downward</span>
+                                            2.1%
+                                        </span>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="size-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400">
+<span class="material-symbols-outlined">flight</span>
+</div>
+<div>
+<p class="font-semibold text-slate-900 dark:text-white">Travel &amp; Transport</p>
+<p class="text-xs text-slate-500">Business Trips</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 font-mono font-medium text-slate-700 dark:text-slate-300">$850.00</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="flex-1 h-2 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
+<div class="h-full bg-blue-500 w-[28%] rounded-full"></div>
+</div>
+<span class="text-xs font-bold text-slate-600 dark:text-slate-400">28%</span>
+</div>
+</td>
+<td class="px-6 py-4 text-center text-slate-600 dark:text-slate-400">8</td>
+<td class="px-6 py-4 text-right">
+<span class="inline-flex items-center text-xs font-bold text-slate-400">
+<span class="material-symbols-outlined text-[16px] mr-0.5">remove</span>
+                                            0%
+                                        </span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination Footer -->
+<div class="px-6 py-4 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">
+<span class="text-xs text-slate-500 dark:text-slate-400">Showing 3 of 15 categories</span>
+<div class="flex gap-2">
+<button class="size-8 rounded flex items-center justify-center border border-slate-200 dark:border-slate-700 text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 disabled:opacity-50 transition-colors">
+<span class="material-symbols-outlined text-[16px]">chevron_left</span>
+</button>
+<button class="size-8 rounded flex items-center justify-center border border-slate-200 dark:border-slate-700 text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer Spacing -->
+<div class="h-8"></div>
+</div>
+</main>
+</body></html>

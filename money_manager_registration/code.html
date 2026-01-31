@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Money Manager Registration</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1d69ed",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101722",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+</head>
+<body class="font-display antialiased text-slate-900 bg-background-light dark:bg-background-dark">
+<!-- Main Container with Gradient Background -->
+<div class="min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-[#0f172a] via-[#1e293b] to-primary p-4 md:p-6">
+<!-- Registration Card -->
+<div class="w-full max-w-[500px] bg-white rounded-2xl shadow-2xl overflow-hidden relative">
+<!-- Decorative top accent -->
+<div class="h-2 w-full bg-primary"></div>
+<div class="p-8 md:p-10 flex flex-col gap-6">
+<!-- Header -->
+<div class="text-center">
+<h1 class="text-3xl font-bold tracking-tight text-slate-900">Create Account</h1>
+<p class="text-slate-500 mt-2 text-sm">Start managing your finances today.</p>
+</div>
+<!-- Form -->
+<form class="flex flex-col gap-5" onsubmit="event.preventDefault();">
+<!-- Name Fields (Grid) -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div class="flex flex-col gap-1.5">
+<label class="text-sm font-medium text-slate-700">First Name</label>
+<div class="relative group">
+<div class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-[20px]">person</span>
+</div>
+<input class="w-full h-11 pl-10 pr-3 rounded-lg border-slate-200 text-slate-900 placeholder:text-slate-400 focus:border-primary focus:ring-primary text-sm transition-all" placeholder="Jane" type="text" value="Jane"/>
+<div class="absolute right-3 top-1/2 -translate-y-1/2 text-green-500 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-[20px] fill-1">check_circle</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-1.5">
+<label class="text-sm font-medium text-slate-700">Last Name</label>
+<div class="relative group">
+<div class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-[20px]">person</span>
+</div>
+<input class="w-full h-11 pl-10 pr-3 rounded-lg border-slate-200 text-slate-900 placeholder:text-slate-400 focus:border-primary focus:ring-primary text-sm transition-all" placeholder="Doe" type="text" value="Doe"/>
+<div class="absolute right-3 top-1/2 -translate-y-1/2 text-green-500 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-[20px] fill-1">check_circle</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Email Field -->
+<div class="flex flex-col gap-1.5">
+<label class="text-sm font-medium text-slate-700">Email Address</label>
+<div class="relative group">
+<div class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-[20px]">mail</span>
+</div>
+<input class="w-full h-11 pl-10 pr-10 rounded-lg border-slate-200 text-slate-900 placeholder:text-slate-400 focus:border-primary focus:ring-primary text-sm transition-all" placeholder="jane.doe@example.com" type="email" value="jane.doe@example.com"/>
+<div class="absolute right-3 top-1/2 -translate-y-1/2 text-green-500 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-[20px] fill-1">check_circle</span>
+</div>
+</div>
+</div>
+<!-- Password Field -->
+<div class="flex flex-col gap-1.5">
+<label class="text-sm font-medium text-slate-700">Password</label>
+<div class="relative group">
+<div class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-[20px]">lock</span>
+</div>
+<input class="w-full h-11 pl-10 pr-10 rounded-lg border-slate-200 text-slate-900 placeholder:text-slate-400 focus:border-primary focus:ring-primary text-sm transition-all" placeholder="••••••••" type="password" value="SecureP@ss123"/>
+<button class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 flex items-center transition-colors" type="button">
+<span class="material-symbols-outlined text-[20px]">visibility</span>
+</button>
+</div>
+<!-- Password Strength -->
+<div class="mt-1">
+<div class="flex justify-between items-center mb-1">
+<span class="text-xs text-slate-500">Password strength</span>
+<span class="text-xs font-medium text-green-600">Strong</span>
+</div>
+<div class="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden flex">
+<div class="h-full bg-green-500 w-3/4 rounded-full"></div>
+<div class="h-full bg-slate-100 w-1/4"></div>
+</div>
+<div class="flex gap-1 mt-1.5">
+<span class="material-symbols-outlined text-[12px] text-green-500">check</span>
+<span class="text-xs text-slate-500">Must contain at least 8 characters</span>
+</div>
+</div>
+</div>
+<!-- Confirm Password Field -->
+<div class="flex flex-col gap-1.5">
+<label class="text-sm font-medium text-slate-700">Confirm Password</label>
+<div class="relative group">
+<div class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-[20px]">lock_reset</span>
+</div>
+<input class="w-full h-11 pl-10 pr-10 rounded-lg border-slate-200 text-slate-900 placeholder:text-slate-400 focus:border-primary focus:ring-primary text-sm transition-all" placeholder="••••••••" type="password" value="SecureP@ss123"/>
+<div class="absolute right-3 top-1/2 -translate-y-1/2 text-green-500 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-[20px] fill-1">check_circle</span>
+</div>
+</div>
+</div>
+<!-- Terms Checkbox -->
+<div class="flex items-start gap-3 mt-2">
+<div class="flex items-center h-5">
+<input class="w-4 h-4 text-primary bg-white border-slate-300 rounded focus:ring-primary focus:ring-offset-0 cursor-pointer" id="terms" type="checkbox"/>
+</div>
+<label class="text-sm text-slate-600 leading-tight" for="terms">
+                            I agree to the <a class="text-primary hover:underline font-medium" href="#">Terms of Service</a> and <a class="text-primary hover:underline font-medium" href="#">Privacy Policy</a>.
+                        </label>
+</div>
+<!-- Submit Button -->
+<button class="w-full bg-primary hover:bg-blue-700 text-white font-semibold h-12 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2 mt-2">
+<span>Create Account</span>
+<span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+</button>
+</form>
+<!-- Footer -->
+<div class="text-center pt-2 border-t border-slate-100">
+<p class="text-sm text-slate-500">
+                        Already have an account? 
+                        <a class="text-primary font-semibold hover:underline" href="#">Sign In</a>
+</p>
+</div>
+</div>
+</div>
+</div>
+</body></html>
