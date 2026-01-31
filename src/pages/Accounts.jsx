@@ -16,7 +16,7 @@ const ACCOUNT_TYPES = [
   { value: "credit", label: "Credit Card" },
 ];
 
-const ACCOUNT_ICONS = {
+const ACCOUNT_ICONS = { 
   checking: "account_balance",
   savings: "savings",
   credit: "credit_card",
