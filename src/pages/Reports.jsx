@@ -216,9 +216,14 @@ const Reports = () => {
                     innerRadius={60}
                     outerRadius={100}
                     paddingAngle={2}
-                    label={({ name, percent }) =>
-                      `${name?.replace("_", " ").charAt(0).toUpperCase() + name?.replace("_", " ").slice(1)} (${(percent * 100).toFixed(0)}%)`
-                    }
+                    label={({ name, percent }) => {
+                      if (!name) return "";
+                      const formattedName = name.replace("_", " ");
+                      const capitalized =
+                        formattedName.charAt(0).toUpperCase() +
+                        formattedName.slice(1);
+                      return `${capitalized} (${(percent * 100).toFixed(0)}%)`;
+                    }}
                   >
                     {categoryData.map((entry, index) => (
                       <Cell
