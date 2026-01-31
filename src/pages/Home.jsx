@@ -12,7 +12,7 @@ const Home = () => {
                 fill="none"
                 viewBox="0 0 48 48"
                 xmlns="http://www.w3.org/2000/svg"
-              >
+              > 
                 <rect
                   height="32"
                   stroke="currentColor"
