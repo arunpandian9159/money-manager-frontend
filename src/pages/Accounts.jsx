@@ -16,7 +16,7 @@ const ACCOUNT_TYPES = [
   { value: "credit", label: "Credit Card" },
 ];
 
-const ACCOUNT_ICONS = { 
+const ACCOUNT_ICONS = {
   checking: "account_balance",
   savings: "savings",
   credit: "credit_card",
@@ -183,28 +183,34 @@ const Accounts = () => {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row justify-between items-end gap-6 border-b border-secondary/5 dark:border-white/5 pb-8">
         <div>
-          <h1 className="text-2xl font-bold text-[#111318] dark:text-white">
+          <div className="flex items-center gap-4 mb-2">
+            <span className="h-[1px] w-8 bg-primary"></span>
+            <span className="font-mono text-[10px] text-primary uppercase tracking-widest">
+              Capital Repositories
+            </span>
+          </div>
+          <h1 className="text-4xl font-bold text-secondary dark:text-background-light uppercase tracking-tight">
             Accounts
           </h1>
-          <p className="text-[#617089] mt-1">
-            Manage your bank accounts and credit cards
+          <p className="font-serif italic text-secondary/60 dark:text-background-light/60 mt-2">
+            Institutional and private assets overview.
           </p>
         </div>
-        <div className="flex gap-3">
+        <div className="flex gap-4">
           <Button
-            variant="secondary"
+            variant="outline"
             icon="sync_alt"
             onClick={() => {
               setFormError("");
               setTransferModalOpen(true);
             }}
           >
-            Transfer
+            Transfer Capital
           </Button>
           <Button icon="add" onClick={openAddModal}>
-            Add Account
+            Register Account
           </Button>
         </div>
       </div>
@@ -235,64 +241,76 @@ const Accounts = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {accounts.length > 0 ? (
           accounts.map((account) => (
-            <Card key={account._id} className="relative">
-              <div className="flex items-start justify-between mb-4">
+            <Card
+              key={account._id}
+              className="relative group overflow-hidden border-secondary/5 dark:border-white/5"
+            >
+              <div className="absolute top-0 right-0 w-24 h-24 -mr-8 -mt-8 bg-secondary/5 dark:bg-white/5 rounded-full" />
+              <div className="flex items-start justify-between mb-8 relative z-10">
                 <div
-                  className={`p-3 rounded-lg ${account.type === "credit" ? "bg-red-50 text-red-600" : account.type === "savings" ? "bg-green-50 text-green-600" : "bg-blue-50 text-primary"}`}
+                  className={`p-2 rounded-none ${account.type === "credit" ? "bg-primary/10 text-primary" : account.type === "savings" ? "bg-accent/10 text-accent" : "bg-secondary text-background-light"}`}
                 >
-                  <span className="material-symbols-outlined">
+                  <span className="material-symbols-outlined text-[20px]">
                     {ACCOUNT_ICONS[account.type]}
                   </span>
                 </div>
-                <div className="flex gap-1">
+                <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                   <button
                     onClick={() => openEditModal(account)}
-                    className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-[#617089]"
+                    className="p-2 rounded-none hover:bg-secondary/10 dark:hover:bg-white/10 text-secondary/40 dark:text-background-light/40 hover:text-secondary dark:hover:text-background-light"
                   >
-                    <span className="material-symbols-outlined text-[20px]">
+                    <span className="material-symbols-outlined text-[18px]">
                       edit
                     </span>
                   </button>
                   <button
                     onClick={() => openDeleteModal(account)}
-                    className="p-1.5 rounded-lg hover:bg-red-50 text-red-500"
+                    className="p-2 rounded-none hover:bg-danger/10 text-danger"
                   >
-                    <span className="material-symbols-outlined text-[20px]">
+                    <span className="material-symbols-outlined text-[18px]">
                       delete
                     </span>
                   </button>
                 </div>
               </div>
-              <h3 className="text-lg font-bold text-[#111318] dark:text-white mb-1">
-                {account.name}
-              </h3>
-              <p className="text-sm text-[#617089] capitalize mb-4">
-                {account.type} Account
-              </p>
-              <p
-                className={`text-2xl font-bold ${account.balance >= 0 ? "text-[#111318] dark:text-white" : "text-red-600"}`}
-              >
-                ₹{account.balance?.toLocaleString()}
-              </p>
+              <div className="relative z-10">
+                <p className="font-mono text-[10px] uppercase tracking-widest text-secondary/40 dark:text-background-light/40 mb-1">
+                  {account.type} Division
+                </p>
+                <h3 className="text-xl font-bold text-secondary dark:text-background-light mb-6">
+                  {account.name}
+                </h3>
+                <div className="flex flex-col gap-1">
+                  <span className="font-mono text-[9px] uppercase tracking-tighter text-secondary/30 dark:text-background-light/30">
+                    Available Liquidity
+                  </span>
+                  <p
+                    className={`text-3xl font-serif ${account.balance >= 0 ? "text-secondary dark:text-background-light" : "text-danger"}`}
+                  >
+                    ₹{account.balance?.toLocaleString()}
+                  </p>
+                </div>
+              </div>
               {account.description && (
-                <p className="text-sm text-[#617089] mt-2">
+                <p className="text-xs font-serif italic text-secondary/60 dark:text-background-light/60 mt-4 line-clamp-2">
                   {account.description}
                 </p>
               )}
-              <button
+              <Button
+                variant="ghost"
+                size="sm"
+                fullWidth
                 onClick={() => openHistoryModal(account)}
-                className="mt-4 w-full flex items-center justify-center gap-2 py-2 px-3 rounded-lg bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 text-sm text-[#617089] transition-colors"
+                className="mt-8 border-t border-secondary/5 dark:border-white/5 rounded-none pt-4 text-[10px] font-mono uppercase tracking-widest"
+                icon="history"
               >
-                <span className="material-symbols-outlined text-[18px]">
-                  history
-                </span>
-                View Transactions
-              </button>
+                Capital Evolution
+              </Button>
             </Card>
           ))
         ) : (
-          <div className="col-span-full text-center py-12 text-[#617089]">
-            No accounts yet. Add your first account!
+          <div className="col-span-full text-center py-20 border border-dashed border-secondary/10 dark:border-white/10 font-serif italic text-secondary/40">
+            No active repositories detected.
           </div>
         )}
       </div>

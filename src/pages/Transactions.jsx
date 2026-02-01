@@ -181,116 +181,141 @@ const Transactions = () => {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row justify-between items-end gap-6 border-b border-secondary/5 dark:border-white/5 pb-8">
         <div>
-          <h1 className="text-2xl font-bold text-[#111318] dark:text-white">
+          <div className="flex items-center gap-4 mb-2">
+            <span className="h-[1px] w-8 bg-primary"></span>
+            <span className="font-mono text-[10px] text-primary uppercase tracking-widest">
+              Ledger Management
+            </span>
+          </div>
+          <h1 className="text-4xl font-bold text-secondary dark:text-background-light uppercase tracking-tight">
             Transactions
           </h1>
-          <p className="text-[#617089] mt-1">Manage your income and expenses</p>
+          <p className="font-serif italic text-secondary/60 dark:text-background-light/60 mt-2">
+            A comprehensive record of your capital movement.
+          </p>
         </div>
         <Button icon="add" onClick={openAddModal}>
-          Add Transaction
+          New Entry
         </Button>
       </div>
 
       {/* Filters */}
-      <Card padding={false}>
-        <div className="flex flex-wrap gap-4 p-4">
-          <Select
-            options={[
-              { value: "", label: "All Types" },
-              { value: "income", label: "Income" },
-              { value: "expense", label: "Expense" },
-            ]}
-            value={filters.type}
-            onChange={(e) => setFilters({ ...filters, type: e.target.value })}
-            placeholder="Type"
-            className="w-40"
-          />
-          <Select
-            options={[
-              { value: "", label: "All Divisions" },
-              { value: "office", label: "Office" },
-              { value: "personal", label: "Personal" },
-            ]}
-            value={filters.division}
-            onChange={(e) =>
-              setFilters({ ...filters, division: e.target.value })
-            }
-            placeholder="Division"
-            className="w-40"
-          />
-          <Select
-            options={[{ value: "", label: "All Categories" }, ...CATEGORIES]}
-            value={filters.category}
-            onChange={(e) =>
-              setFilters({ ...filters, category: e.target.value })
-            }
-            placeholder="Category"
-            className="w-40"
-          />
-          <div className="flex items-center gap-2">
-            <Input
-              type="date"
-              value={filters.startDate}
-              onChange={(e) =>
-                setFilters({ ...filters, startDate: e.target.value })
-              }
-              placeholder="Start Date"
-              className="w-40"
-            />
-            <span className="text-[#617089]">to</span>
-            <Input
-              type="date"
-              value={filters.endDate}
-              onChange={(e) =>
-                setFilters({ ...filters, endDate: e.target.value })
-              }
-              placeholder="End Date"
-              className="w-40"
+      <Card padding={false} variant="outline" className="bg-transparent">
+        <div className="flex flex-wrap gap-6 p-6">
+          <div className="flex flex-col gap-2">
+            <span className="font-mono text-[10px] uppercase tracking-widest text-secondary/40">
+              Classification
+            </span>
+            <Select
+              options={[
+                { value: "", label: "All Flows" },
+                { value: "income", label: "Inflow" },
+                { value: "expense", label: "Outflow" },
+              ]}
+              value={filters.type}
+              onChange={(e) => setFilters({ ...filters, type: e.target.value })}
+              className="w-48"
             />
           </div>
-          {(filters.startDate || filters.endDate) && (
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={() =>
-                setFilters({ ...filters, startDate: "", endDate: "" })
+          <div className="flex flex-col gap-2">
+            <span className="font-mono text-[10px] uppercase tracking-widest text-secondary/40">
+              Division
+            </span>
+            <Select
+              options={[
+                { value: "", label: "All Sectors" },
+                { value: "office", label: "Office" },
+                { value: "personal", label: "Personal" },
+              ]}
+              value={filters.division}
+              onChange={(e) =>
+                setFilters({ ...filters, division: e.target.value })
               }
-            >
-              Clear Dates
-            </Button>
-          )}
+              className="w-48"
+            />
+          </div>
+          <div className="flex flex-col gap-2">
+            <span className="font-mono text-[10px] uppercase tracking-widest text-secondary/40">
+              Category
+            </span>
+            <Select
+              options={[{ value: "", label: "All Domains" }, ...CATEGORIES]}
+              value={filters.category}
+              onChange={(e) =>
+                setFilters({ ...filters, category: e.target.value })
+              }
+              className="w-48"
+            />
+          </div>
+          <div className="flex items-end gap-3">
+            <div className="flex flex-col gap-2">
+              <span className="font-mono text-[10px] uppercase tracking-widest text-secondary/40">
+                Temporal Range
+              </span>
+              <div className="flex items-center gap-2">
+                <Input
+                  type="date"
+                  value={filters.startDate}
+                  onChange={(e) =>
+                    setFilters({ ...filters, startDate: e.target.value })
+                  }
+                  className="w-40"
+                />
+                <span className="text-secondary/20">/</span>
+                <Input
+                  type="date"
+                  value={filters.endDate}
+                  onChange={(e) =>
+                    setFilters({ ...filters, endDate: e.target.value })
+                  }
+                  className="w-40"
+                />
+              </div>
+            </div>
+            {(filters.startDate || filters.endDate) && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() =>
+                  setFilters({ ...filters, startDate: "", endDate: "" })
+                }
+              >
+                Reset Temporal
+              </Button>
+            )}
+          </div>
         </div>
       </Card>
 
       {/* Transactions Table */}
-      <Card padding={false}>
+      <Card padding={false} className="overflow-hidden">
         {loading ? (
-          <div className="flex justify-center py-8">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+          <div className="flex justify-center py-12">
+            <div className="animate-spin rounded-none h-8 w-8 border-b-2 border-primary"></div>
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gray-50 dark:bg-white/5">
-                <tr>
-                  <th className="text-left py-3 px-4 text-sm font-medium text-[#617089]">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="border-b border-secondary/5 dark:border-white/5">
+                  <th className="py-4 px-6 font-mono text-[10px] uppercase tracking-widest text-secondary/40">
                     Description
                   </th>
-                  <th className="text-left py-3 px-4 text-sm font-medium text-[#617089]">
-                    Category
+                  <th className="py-4 px-6 font-mono text-[10px] uppercase tracking-widest text-secondary/40">
+                    Domain
                   </th>
-                  <th className="text-left py-3 px-4 text-sm font-medium text-[#617089]">
-                    Division
+                  <th className="py-4 px-6 font-mono text-[10px] uppercase tracking-widest text-secondary/40">
+                    Sector
                   </th>
-                  <th className="text-left py-3 px-4 text-sm font-medium text-[#617089]">
-                    Date
+                  <th className="py-4 px-6 font-mono text-[10px] uppercase tracking-widest text-secondary/40">
+                    Temporal
                   </th>
-                  <th className="text-right py-3 px-4 text-sm font-medium text-[#617089]">
-                    Amount
+                  <th className="py-4 px-6 font-mono text-[10px] uppercase tracking-widest text-secondary/40 text-right">
+                    Magnitude
                   </th>
-                  <th className="text-center py-3 px-4 text-sm font-medium text-[#617089]">
+                  <th className="py-4 px-6 font-mono text-[10px] uppercase tracking-widest text-secondary/40 text-center">
                     Actions
                   </th>
                 </tr>
@@ -300,70 +325,75 @@ const Transactions = () => {
                   transactions.map((tx) => (
                     <tr
                       key={tx._id}
-                      className="border-b border-[#f0f2f4] dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-white/5"
+                      className="border-b border-secondary/5 dark:border-white/5 hover:bg-secondary/5 dark:hover:bg-white/5 transition-colors group"
                     >
-                      <td className="py-3 px-4">
-                        <div className="flex items-center gap-3">
+                      <td className="py-5 px-6">
+                        <div className="flex items-center gap-4">
                           <span
-                            className={`material-symbols-outlined p-2 rounded-lg ${tx.type === "income" ? "bg-green-50 text-green-600" : "bg-red-50 text-red-600"}`}
+                            className={`material-symbols-outlined p-2 rounded-none text-[20px] ${tx.type === "income" ? "bg-accent-light text-accent-dark" : "bg-primary/10 text-primary"}`}
                           >
                             {CATEGORY_ICONS[tx.category] || "receipt"}
                           </span>
-                          <span className="font-medium text-[#111318] dark:text-white">
+                          <span className="font-serif italic text-lg text-secondary dark:text-background-light">
                             {tx.description}
                           </span>
                         </div>
                       </td>
-                      <td className="py-3 px-4 text-sm text-[#617089] capitalize">
+                      <td className="py-5 px-6 font-mono text-[11px] uppercase tracking-wider text-secondary/60 dark:text-background-light/60">
                         {tx.category?.replace("_", " ")}
                       </td>
-                      <td className="py-3 px-4">
+                      <td className="py-5 px-6">
                         <span
-                          className={`px-2 py-1 rounded-full text-xs font-medium ${tx.division === "office" ? "bg-blue-50 text-blue-600" : "bg-purple-50 text-purple-600"}`}
+                          className={`px-2 py-1 rounded-none text-[10px] font-mono uppercase tracking-widest ${tx.division === "office" ? "bg-secondary text-background-light" : "bg-accent text-white"}`}
                         >
-                          {tx.division}
+                          {tx.division === "office"
+                            ? "Office"
+                            : "Personal"}
                         </span>
                       </td>
-                      <td className="py-3 px-4 text-sm text-[#617089]">
-                        <div>{format(new Date(tx.date), "MMM dd, yyyy")}</div>
-                        <div className="text-xs">
-                          {format(new Date(tx.date), "hh:mm a")}
+                      <td className="py-5 px-6">
+                        <div className="font-mono text-[11px] text-secondary/60 dark:text-background-light/60">
+                          {format(new Date(tx.date), "MMM dd, yyyy")}
+                        </div>
+                        <div className="font-mono text-[9px] text-secondary/40 dark:text-background-light/40 mt-1">
+                          {format(new Date(tx.date), "HH:mm")}
                         </div>
                       </td>
                       <td
-                        className={`py-3 px-4 text-right font-bold ${tx.type === "income" ? "text-green-600" : "text-[#111318] dark:text-white"}`}
+                        className={`py-5 px-6 text-right font-serif text-xl ${tx.type === "income" ? "text-success" : "text-secondary dark:text-background-light"}`}
                       >
                         {tx.type === "income" ? "+" : "-"}₹
                         {tx.amount?.toLocaleString()}
                       </td>
-                      <td className="py-3 px-4">
-                        <div className="flex justify-center gap-2">
+                      <td className="py-5 px-6">
+                        <div className="flex justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                           {canEdit(tx) ? (
                             <button
                               onClick={() => openEditModal(tx)}
-                              className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-[#617089]"
-                              title="Edit transaction"
+                              className="p-2 rounded-none hover:bg-secondary/10 dark:hover:bg-white/10 text-secondary/60 dark:text-background-light/60"
+                              aria-label="Edit entry"
                             >
-                              <span className="material-symbols-outlined text-[20px]">
+                              <span className="material-symbols-outlined text-[18px]">
                                 edit
                               </span>
                             </button>
                           ) : (
                             <button
                               disabled
-                              className="p-1.5 rounded-lg opacity-50 cursor-not-allowed text-[#617089]"
-                              title="Locked - 12 hour edit window expired"
+                              className="p-2 rounded-none opacity-30 cursor-not-allowed text-secondary/60"
+                              title="Temporal window closed"
                             >
-                              <span className="material-symbols-outlined text-[20px]">
+                              <span className="material-symbols-outlined text-[18px]">
                                 lock
                               </span>
                             </button>
                           )}
                           <button
                             onClick={() => openDeleteModal(tx)}
-                            className="p-1.5 rounded-lg hover:bg-red-50 text-red-500"
+                            className="p-2 rounded-none hover:bg-danger/10 text-danger"
+                            aria-label="Remove entry"
                           >
-                            <span className="material-symbols-outlined text-[20px]">
+                            <span className="material-symbols-outlined text-[18px]">
                               delete
                             </span>
                           </button>
@@ -373,8 +403,11 @@ const Transactions = () => {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="6" className="py-8 text-center text-[#617089]">
-                      No transactions found
+                    <td
+                      colSpan="6"
+                      className="py-12 text-center font-mono text-[10px] uppercase tracking-widest text-secondary/40"
+                    >
+                      No records found in this domain
                     </td>
                   </tr>
                 )}
@@ -383,25 +416,25 @@ const Transactions = () => {
           </div>
         )}
         {pagination.total > pagination.limit && (
-          <div className="flex justify-center gap-2 p-4 border-t border-[#f0f2f4] dark:border-gray-800">
+          <div className="flex justify-center items-center gap-6 p-6 border-t border-secondary/5 dark:border-white/5 bg-secondary/5">
             <Button
-              variant="secondary"
+              variant="ghost"
               size="sm"
               disabled={pagination.page === 1}
               onClick={() => setPagination((p) => ({ ...p, page: p.page - 1 }))}
             >
-              Previous
+              Previous Page
             </Button>
-            <span className="px-4 py-2 text-sm text-[#617089]">
-              Page {pagination.page}
+            <span className="font-mono text-[10px] uppercase tracking-widest text-secondary/40">
+              Sequence {pagination.page}
             </span>
             <Button
-              variant="secondary"
+              variant="ghost"
               size="sm"
               disabled={pagination.page * pagination.limit >= pagination.total}
               onClick={() => setPagination((p) => ({ ...p, page: p.page + 1 }))}
             >
-              Next
+              Next Page
             </Button>
           </div>
         )}

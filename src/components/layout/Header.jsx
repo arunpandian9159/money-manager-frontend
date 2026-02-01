@@ -13,12 +13,12 @@ const Header = ({ onSearch }) => {
   };
 
   return (
-    <header className="h-16 bg-white dark:bg-[#1a2332] border-b border-[#f0f2f4] dark:border-gray-800 flex items-center justify-between px-8 shrink-0">
+    <header className="h-20 bg-background-light dark:bg-secondary border-b border-secondary/5 dark:border-white/5 flex items-center justify-between px-12 shrink-0">
       {/* Search Bar */}
-      <div className="w-[400px]">
-        <div className="relative flex w-full items-center h-10 rounded-lg focus-within:ring-2 ring-primary/20 transition-all">
-          <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-[#617089]">
-            <span className="material-symbols-outlined text-[20px]">
+      <div className="w-[480px]">
+        <div className="relative flex w-full items-center h-12 transition-all">
+          <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-secondary/40 dark:text-background-light/40">
+            <span className="material-symbols-outlined text-[18px]">
               search
             </span>
           </div>
@@ -26,29 +26,33 @@ const Header = ({ onSearch }) => {
             type="text"
             value={searchQuery}
             onChange={handleSearch}
-            className="block w-full pl-10 pr-3 py-2 border-none rounded-lg bg-[#f0f2f4] dark:bg-white/5 text-[#111318] dark:text-white placeholder-[#617089] text-sm focus:ring-0"
-            placeholder="Search transactions..."
+            className="block w-full pl-11 pr-4 py-3 border border-secondary/10 dark:border-white/10 rounded-none bg-transparent text-secondary dark:text-background-light placeholder-secondary/40 dark:placeholder-background-light/40 text-xs font-mono uppercase tracking-widest focus:border-primary transition-all ring-0 focus:ring-0"
+            placeholder="Explore Capital Flow..."
           />
         </div>
       </div>
 
       {/* Right Actions */}
-      <div className="flex items-center gap-6">
+      <div className="flex items-center gap-8">
         {/* Notification Bell */}
-        <button className="relative p-2 text-[#617089] hover:text-primary transition-colors rounded-full hover:bg-gray-100 dark:hover:bg-white/5">
-          <span className="material-symbols-outlined">notifications</span>
-          <span className="absolute top-2 right-2.5 block h-2 w-2 rounded-full ring-2 ring-white dark:ring-[#1a2332] bg-red-500"></span>
+        <button className="relative p-2 text-secondary/60 dark:text-background-light/60 hover:text-primary transition-colors">
+          <span className="material-symbols-outlined text-[22px]">
+            notifications
+          </span>
+          <span className="absolute top-2 right-2.5 block h-1.5 w-1.5 rounded-none bg-primary"></span>
         </button>
 
         {/* User Profile */}
-        <div className="flex items-center gap-3 pl-6 border-l border-[#f0f2f4] dark:border-gray-700">
+        <div className="flex items-center gap-4 pl-8 border-l border-secondary/5 dark:border-white/5">
           <div className="text-right hidden md:block">
-            <p className="text-sm font-bold text-[#111318] dark:text-white">
+            <p className="text-sm font-serif italic text-secondary dark:text-background-light">
               {user?.firstName} {user?.lastName}
             </p>
-            <p className="text-xs text-[#617089]">Pro Plan</p>
+            <p className="text-[10px] font-mono uppercase tracking-wider text-secondary/40 dark:text-background-light/40">
+              Institutional Tier
+            </p>
           </div>
-          <div className="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold border-2 border-white dark:border-gray-700 shadow-sm">
+          <div className="h-10 w-10 rounded-none bg-primary/10 flex items-center justify-center text-primary font-bold border border-primary/20 shadow-soft">
             {user?.firstName?.[0]}
             {user?.lastName?.[0]}
           </div>

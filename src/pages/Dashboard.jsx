@@ -65,14 +65,13 @@ const CATEGORY_ICONS = {
 };
 
 const COLORS = [
-  "#1d69ed",
-  "#10B981",
-  "#F59E0B",
-  "#EF4444",
-  "#8B5CF6",
-  "#EC4899",
-  "#06B6D4",
-  "#84CC16",
+  "#D65A31", // Terracotta
+  "#0A192F", // Navy
+  "#81B29A", // Sage
+  "#E47F5C", // Terracotta Light
+  "#1E293B", // Navy Light
+  "#5A8C73", // Sage Dark
+  "#B84825", // Terracotta Dark
 ];
 
 const Dashboard = () => {
@@ -225,26 +224,32 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-9">
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <div className="flex flex-col sm:flex-row justify-between items-end gap-6 border-b border-secondary/5 dark:border-white/5 pb-8">
         <div>
-          <h1 className="text-2xl font-bold text-[#111318] dark:text-white">
+          <div className="flex items-center gap-4 mb-2">
+            <span className="h-[1px] w-8 bg-primary"></span>
+            <span className="font-mono text-[10px] text-primary uppercase tracking-widest">
+              Executive Overview
+            </span>
+          </div>
+          <h1 className="text-4xl font-bold text-secondary dark:text-background-light uppercase tracking-tight">
             Dashboard
           </h1>
-          <p className="text-[#617089] mt-1">
-            Welcome back! Here's your financial overview.
+          <p className="font-serif italic text-secondary/60 dark:text-background-light/60 mt-2">
+            Welcome back. Here is the current state of your capital.
           </p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-4">
           <Select
             options={PERIOD_OPTIONS}
             value={period}
             onChange={(e) => setPeriod(e.target.value)}
-            className="w-40"
+            className="w-48"
           />
           <Button icon="add" onClick={openAddModal}>
-            Add Transaction
+            New Entry
           </Button>
         </div>
       </div>
@@ -280,8 +285,11 @@ const Dashboard = () => {
       {/* Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Expense by Category */}
-        <Card title="Expenses by Category">
-          <div className="h-64">
+        <Card
+          title="Capital Distribution"
+          subtitle="Allocation by primary category"
+        >
+          <div className="h-72">
             {categoryData.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
@@ -291,55 +299,102 @@ const Dashboard = () => {
                     nameKey="_id"
                     cx="50%"
                     cy="50%"
-                    outerRadius={80}
+                    innerRadius={60}
+                    outerRadius={90}
+                    paddingAngle={2}
                     label={({ name, percent }) => {
                       if (!name) return "";
-                      const formattedName = name.replace("_", " ");
-                      const capitalized =
-                        formattedName.charAt(0).toUpperCase() +
-                        formattedName.slice(1);
-                      return `${capitalized} ${(percent * 100).toFixed(0)}%`;
+                      return `${(percent * 100).toFixed(0)}%`;
                     }}
                   >
                     {categoryData.map((entry, index) => (
                       <Cell
                         key={`cell-${index}`}
                         fill={COLORS[index % COLORS.length]}
+                        stroke="none"
                       />
                     ))}
                   </Pie>
                   <Tooltip
+                    contentStyle={{
+                      backgroundColor: "#0A192F",
+                      border: "none",
+                      borderRadius: "0",
+                      color: "#F9F8F4",
+                      fontFamily: "JetBrains Mono",
+                      fontSize: "10px",
+                    }}
+                    itemStyle={{ color: "#F9F8F4" }}
                     formatter={(value) => `₹${value.toLocaleString()}`}
                   />
                 </PieChart>
               </ResponsiveContainer>
             ) : (
-              <div className="flex items-center justify-center h-full text-[#617089]">
-                No data available
+              <div className="flex items-center justify-center h-full font-mono text-[10px] uppercase tracking-widest text-secondary/40">
+                Data non-existent
               </div>
             )}
           </div>
         </Card>
 
         {/* Division Comparison */}
-        <Card title="Office vs Personal">
-          <div className="h-64">
+        <Card
+          title="Divisional Velocity"
+          subtitle="Comparative analysis: Office vs Personal"
+        >
+          <div className="h-72">
             {divisionData.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={divisionData}>
-                  <XAxis dataKey="_id" />
-                  <YAxis />
+                <BarChart data={divisionData} barGap={8}>
+                  <XAxis
+                    dataKey="_id"
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{
+                      fontSize: 10,
+                      fontFamily: "JetBrains Mono",
+                      fill: "#0A192F66",
+                    }}
+                  />
+                  <YAxis
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{
+                      fontSize: 10,
+                      fontFamily: "JetBrains Mono",
+                      fill: "#0A192F66",
+                    }}
+                    tickFormatter={(value) => `₹${(value / 1000).toFixed(0)}k`}
+                  />
                   <Tooltip
+                    cursor={{ fill: "transparent" }}
+                    contentStyle={{
+                      backgroundColor: "#0A192F",
+                      border: "none",
+                      borderRadius: "0",
+                      color: "#F9F8F4",
+                      fontFamily: "JetBrains Mono",
+                      fontSize: "10px",
+                    }}
                     formatter={(value) => `₹${value.toLocaleString()}`}
                   />
-                  <Legend />
-                  <Bar dataKey="income" fill="#10B981" name="Income" />
-                  <Bar dataKey="expense" fill="#EF4444" name="Expense" />
+                  <Bar
+                    dataKey="income"
+                    fill="#81B29A"
+                    name="Inflow"
+                    radius={[0, 0, 0, 0]}
+                  />
+                  <Bar
+                    dataKey="expense"
+                    fill="#D65A31"
+                    name="Outflow"
+                    radius={[0, 0, 0, 0]}
+                  />
                 </BarChart>
               </ResponsiveContainer>
             ) : (
-              <div className="flex items-center justify-center h-full text-[#617089]">
-                No data available
+              <div className="flex items-center justify-center h-full font-mono text-[10px] uppercase tracking-widest text-secondary/40">
+                Data non-existent
               </div>
             )}
           </div>

@@ -28,27 +28,32 @@ const Login = () => {
   };
 
   return (
-    <div className="flex flex-col p-8 sm:p-12">
+    <div className="flex flex-col p-8 sm:p-12 bg-background-light dark:bg-background-dark min-h-[600px] justify-center">
       {/* Header */}
-      <div className="mb-10 flex flex-col items-center">
-        <div className="flex items-center gap-2.5 mb-8">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-navy text-white shadow-lg shadow-navy/20">
-            <span className="material-symbols-outlined text-[22px]">
+      <div className="mb-12 flex flex-col items-center">
+        <div className="flex items-center gap-3 mb-10">
+          <div className="flex h-10 w-10 items-center justify-center rounded-none bg-secondary text-background-light shadow-xl shadow-secondary/10">
+            <span className="material-symbols-outlined text-[20px]">
               account_balance_wallet
             </span>
           </div>
-          <span className="text-xl font-clash font-semibold tracking-wide text-navy">
+          <span className="text-xl font-bold uppercase tracking-[0.2em] text-secondary dark:text-background-light">
             Money Manager
           </span>
         </div>
-        <p className="mb-3 font-mono text-[11px] uppercase tracking-[0.2em] text-terracotta font-medium">
-          Financial Intelligence
-        </p>
-        <h1 className="text-center font-clash text-3xl font-semibold leading-tight tracking-tight text-navy sm:text-4xl">
-          Welcome Back
+        <div className="flex items-center gap-4 mb-3">
+          <span className="h-[1px] w-6 bg-primary"></span>
+          <span className="font-mono text-[10px] uppercase tracking-widest text-primary font-medium">
+            Authentication Layer
+          </span>
+          <span className="h-[1px] w-6 bg-primary"></span>
+        </div>
+        <h1 className="text-center font-bold text-4xl uppercase tracking-tighter text-secondary dark:text-background-light">
+          Terminal Access
         </h1>
-        <p className="mt-3 text-center text-[15px] font-normal text-slate-500 leading-relaxed max-w-xs mx-auto">
-          Enter your credentials to access your personal dashboard.
+        <p className="mt-4 text-center font-serif italic text-secondary/60 dark:text-background-light/60 max-w-xs mx-auto">
+          Please provide your credentials to resolve your personal financial
+          identity.
         </p>
       </div>
 
@@ -60,23 +65,26 @@ const Login = () => {
       )}
 
       {/* Form */}
-      <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-6">
         {/* Email Field */}
-        <div className="flex flex-col gap-1.5">
-          <label className="text-sm font-medium text-navy ml-1" htmlFor="email">
-            Email Address
+        <div className="flex flex-col gap-2">
+          <label
+            className="font-mono text-[10px] uppercase tracking-widest text-secondary/40 ml-1"
+            htmlFor="email"
+          >
+            Email Identity
           </label>
-          <div className="group relative flex w-full items-center rounded-lg border border-border-light bg-white transition-all duration-200 focus-within:border-terracotta focus-within:ring-1 focus-within:ring-terracotta">
-            <div className="pointer-events-none flex h-full w-12 items-center justify-center text-slate-400 transition-colors group-focus-within:text-terracotta">
-              <span className="material-symbols-outlined text-[20px]">
+          <div className="group relative flex w-full items-center rounded-none border border-secondary/10 bg-white dark:bg-white/5 transition-all duration-300 focus-within:border-primary">
+            <div className="pointer-events-none flex h-full w-12 items-center justify-center text-secondary/30 transition-colors group-focus-within:text-primary">
+              <span className="material-symbols-outlined text-[18px]">
                 mail
               </span>
             </div>
             <input
-              className="h-11 w-full border-0 bg-transparent p-0 pr-4 text-[15px] text-navy placeholder:text-slate-400 focus:outline-none focus:ring-0 font-sans"
+              className="h-12 w-full border-0 bg-transparent p-0 pr-4 text-sm text-secondary dark:text-background-light placeholder:text-secondary/20 focus:outline-none focus:ring-0 font-mono"
               id="email"
               name="email"
-              placeholder="name@example.com"
+              placeholder="IDENTITY@RESERVE.SYS"
               type="email"
               value={formData.email}
               onChange={handleChange}
@@ -86,24 +94,24 @@ const Login = () => {
         </div>
 
         {/* Password Field */}
-        <div className="flex flex-col gap-1.5">
+        <div className="flex flex-col gap-2">
           <label
-            className="text-sm font-medium text-navy ml-1"
+            className="font-mono text-[10px] uppercase tracking-widest text-secondary/40 ml-1"
             htmlFor="password"
           >
-            Password
+            Security Key
           </label>
-          <div className="group relative flex w-full items-center rounded-lg border border-border-light bg-white transition-all duration-200 focus-within:border-terracotta focus-within:ring-1 focus-within:ring-terracotta">
-            <div className="pointer-events-none flex h-full w-12 items-center justify-center text-slate-400 transition-colors group-focus-within:text-terracotta">
-              <span className="material-symbols-outlined text-[20px]">
+          <div className="group relative flex w-full items-center rounded-none border border-secondary/10 bg-white dark:bg-white/5 transition-all duration-300 focus-within:border-primary">
+            <div className="pointer-events-none flex h-full w-12 items-center justify-center text-secondary/30 transition-colors group-focus-within:text-primary">
+              <span className="material-symbols-outlined text-[18px]">
                 lock
               </span>
             </div>
             <input
-              className="h-11 w-full border-0 bg-transparent p-0 pr-4 text-[15px] text-navy placeholder:text-slate-400 focus:outline-none focus:ring-0 font-sans"
+              className="h-12 w-full border-0 bg-transparent p-0 pr-4 text-sm text-secondary dark:text-background-light placeholder:text-secondary/20 focus:outline-none focus:ring-0 font-mono"
               id="password"
               name="password"
-              placeholder="Enter your password"
+              placeholder="••••••••"
               type={showPassword ? "text" : "password"}
               value={formData.password}
               onChange={handleChange}
@@ -112,9 +120,9 @@ const Login = () => {
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="flex h-full w-12 items-center justify-center text-slate-400 hover:text-navy transition-colors"
+              className="flex h-full w-12 items-center justify-center text-secondary/30 hover:text-secondary transition-colors"
             >
-              <span className="material-symbols-outlined text-[20px]">
+              <span className="material-symbols-outlined text-[18px]">
                 {showPassword ? "visibility" : "visibility_off"}
               </span>
             </button>
@@ -122,21 +130,21 @@ const Login = () => {
         </div>
 
         {/* Remember Me & Forgot Password */}
-        <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
-          <label className="flex cursor-pointer items-center gap-2.5">
+        <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
+          <label className="flex cursor-pointer items-center gap-3">
             <input
               type="checkbox"
-              className="h-4 w-4 rounded border-slate-300 text-terracotta focus:ring-terracotta/20 cursor-pointer"
+              className="h-4 w-4 rounded-none border-secondary/20 text-primary focus:ring-primary/20 cursor-pointer"
             />
-            <span className="text-sm font-medium text-slate-600">
-              Remember me
+            <span className="font-mono text-[10px] uppercase tracking-widest text-secondary/60">
+              Persist Session
             </span>
           </label>
           <a
-            className="text-sm font-medium text-terracotta hover:text-terracotta-light transition-colors"
+            className="font-mono text-[10px] uppercase tracking-widest text-primary hover:text-accent transition-colors"
             href="#"
           >
-            Forgot password?
+            Key Recovery
           </a>
         </div>
 
@@ -144,12 +152,13 @@ const Login = () => {
         <button
           type="submit"
           disabled={loading}
-          className="mt-4 flex h-12 w-full items-center justify-center rounded-lg bg-navy px-6 text-[15px] font-semibold tracking-wide text-white shadow-md shadow-navy/10 transition-all hover:bg-navy-light focus:outline-none focus:ring-2 focus:ring-navy focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="mt-6 flex h-14 w-full items-center justify-center rounded-none bg-secondary px-8 text-xs font-bold uppercase tracking-[0.2em] text-background-light shadow-xl shadow-secondary/10 transition-all hover:bg-primary focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed group relative overflow-hidden"
         >
-          {loading ? (
-            <span className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent" />
-          ) : (
-            "Sign In"
+          <span className="relative z-10">
+            {loading ? "Decrypting..." : "Initialize Session"}
+          </span>
+          {loading && (
+            <span className="absolute inset-0 bg-primary/20 animate-pulse" />
           )}
         </button>
       </form>

@@ -1,8 +1,8 @@
 const iconColors = {
-  green: "bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400",
-  red: "bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400",
-  blue: "bg-blue-50 dark:bg-blue-500/10 text-primary dark:text-blue-400",
-  orange: "bg-orange-50 dark:bg-orange-500/10 text-orange-500",
+  green: "bg-success/10 text-success",
+  red: "bg-danger/10 text-danger",
+  blue: "bg-secondary/5 text-secondary dark:text-background-light",
+  orange: "bg-primary/10 text-primary",
 };
 
 const StatCard = ({
@@ -14,31 +14,32 @@ const StatCard = ({
   changeType = "positive",
 }) => {
   return (
-    <div className="bg-white dark:bg-[#1a2332] rounded-xl p-6 border border-[#f0f2f4] dark:border-gray-800 shadow-sm hover:shadow-md transition-shadow">
-      <div className="flex justify-between items-start mb-4">
-        <div className={`p-3 rounded-lg ${iconColors[iconColor]}`}>
-          <span className="material-symbols-outlined">{icon}</span>
+    <div className="bg-white dark:bg-secondary p-6 border border-secondary/5 dark:border-white/5 shadow-card hover:shadow-editorial transition-all group">
+      <div className="flex justify-between items-start mb-6">
+        <div
+          className={`p-2 rounded-none transition-colors ${iconColors[iconColor]}`}
+        >
+          <span className="material-symbols-outlined text-[20px]">{icon}</span>
         </div>
         {change !== undefined && (
           <span
             className={`
-            flex items-center text-xs font-bold px-2 py-1 rounded-full
-            ${
-              changeType === "positive"
-                ? "text-green-600 bg-green-50 dark:bg-green-500/10"
-                : "text-red-600 bg-red-50 dark:bg-red-500/10"
-            }
+            font-mono text-[10px] font-bold tracking-widest uppercase
+            ${changeType === "positive" ? "text-success" : "text-danger"}
           `}
           >
-            {changeType === "positive" ? "+" : ""}
-            {change}%
+            {changeType === "positive" ? "↑" : "↓"} {change}%
           </span>
         )}
       </div>
-      <p className="text-[#617089] text-sm font-medium mb-1">{title}</p>
-      <h3 className="text-2xl font-bold text-[#111318] dark:text-white tracking-tight">
-        {value}
-      </h3>
+      <div>
+        <p className="font-mono text-[10px] uppercase tracking-widest text-secondary/50 dark:text-background-light/40 mb-2 group-hover:text-primary transition-colors">
+          {title}
+        </p>
+        <h3 className="text-3xl font-serif text-secondary dark:text-background-light leading-none">
+          {value}
+        </h3>
+      </div>
     </div>
   );
 };

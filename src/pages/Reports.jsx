@@ -19,16 +19,13 @@ import { Card, Select, StatCard } from "../components/common";
 import { reportsAPI } from "../api";
 
 const COLORS = [
-  "#1d69ed",
-  "#10B981",
-  "#F59E0B",
-  "#EF4444",
-  "#8B5CF6",
-  "#EC4899",
-  "#06B6D4",
-  "#84CC16",
-  "#F97316",
-  "#6366F1",
+  "#D65A31", // Terracotta
+  "#0A192F", // Navy
+  "#81B29A", // Sage
+  "#E47F5C", // Terracotta Light
+  "#1E293B", // Navy Light
+  "#5A8C73", // Sage Dark
+  "#B84825", // Terracotta Dark
 ];
 
 const Reports = () => {
@@ -102,25 +99,31 @@ const Reports = () => {
   return (
     <div className="flex flex-col gap-8">
       {/* Page Header */}
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row justify-between items-end gap-6 border-b border-secondary/5 dark:border-white/5 pb-8">
         <div>
-          <h1 className="text-2xl font-bold text-[#111318] dark:text-white">
-            Reports & Analytics
+          <div className="flex items-center gap-4 mb-2">
+            <span className="h-[1px] w-8 bg-primary"></span>
+            <span className="font-mono text-[10px] text-primary uppercase tracking-widest">
+              Analytical Intelligence
+            </span>
+          </div>
+          <h1 className="text-4xl font-bold text-secondary dark:text-background-light uppercase tracking-tight">
+            Financial Report
           </h1>
-          <p className="text-[#617089] mt-1">
-            Analyze your spending patterns and trends
+          <p className="font-serif italic text-secondary/60 dark:text-background-light/60 mt-2">
+            Deep-dive metrics for the selected temporal window.
           </p>
         </div>
         <Select
           options={[
-            { value: "1", label: "Last Month" },
-            { value: "3", label: "Last 3 Months" },
-            { value: "6", label: "Last 6 Months" },
-            { value: "12", label: "Last Year" },
+            { value: "1", label: "Monthly Cycle" },
+            { value: "3", label: "Quarterly View" },
+            { value: "6", label: "Biannum Insight" },
+            { value: "12", label: "Annual Summary" },
           ]}
           value={selectedPeriod}
           onChange={handlePeriodChange}
-          className="w-48"
+          className="w-56"
         />
       </div>
 
@@ -153,48 +156,71 @@ const Reports = () => {
       </div>
 
       {/* Trends Chart */}
-      <Card title="Income vs Expenses Trend">
+      <Card
+        title="Flow Velocity"
+        subtitle="Temporal trend of capital inflow vs outflow"
+      >
         <div className="h-80">
           {trendsData.length > 0 ? (
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={trendsData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
                 <XAxis
                   dataKey="date"
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{
+                    fontSize: 10,
+                    fontFamily: "JetBrains Mono",
+                    fill: "#0A192F66",
+                  }}
                   tickFormatter={(value) =>
-                    format(new Date(value + "-01"), "MMM yyyy")
+                    format(new Date(value + "-01"), "MMM yy")
                   }
                 />
                 <YAxis
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{
+                    fontSize: 10,
+                    fontFamily: "JetBrains Mono",
+                    fill: "#0A192F66",
+                  }}
                   tickFormatter={(value) => `₹${(value / 1000).toFixed(0)}k`}
                 />
                 <Tooltip
+                  contentStyle={{
+                    backgroundColor: "#0A192F",
+                    border: "none",
+                    borderRadius: "0",
+                    color: "#F9F8F4",
+                    fontFamily: "JetBrains Mono",
+                    fontSize: "10px",
+                  }}
                   formatter={(value) => `₹${value.toLocaleString()}`}
                   labelFormatter={(label) =>
                     format(new Date(label + "-01"), "MMMM yyyy")
                   }
                 />
-                <Legend />
                 <Line
                   type="monotone"
                   dataKey="income"
-                  stroke="#10B981"
-                  strokeWidth={2}
-                  name="Income"
-                  dot={{ fill: "#10B981" }}
+                  stroke="#81B29A"
+                  strokeWidth={3}
+                  name="Inflow"
+                  dot={false}
                 />
                 <Line
                   type="monotone"
                   dataKey="expense"
-                  stroke="#EF4444"
-                  strokeWidth={2}
-                  name="Expenses"
-                  dot={{ fill: "#EF4444" }}
+                  stroke="#D65A31"
+                  strokeWidth={3}
+                  name="Outflow"
+                  dot={false}
                 />
               </LineChart>
             </ResponsiveContainer>
           ) : (
-            <div className="flex items-center justify-center h-full text-[#617089]">
+            <div className="flex items-center justify-center h-full font-mono text-[10px] uppercase tracking-widest text-secondary/40">
               No trend data available
             </div>
           )}

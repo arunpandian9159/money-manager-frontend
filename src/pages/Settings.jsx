@@ -78,28 +78,47 @@ const Settings = () => {
 
   return (
     <div className="flex flex-col gap-6">
-      <div>
-        <h1 className="text-2xl font-bold text-[#111318] dark:text-white">
-          Settings
-        </h1>
-        <p className="text-[#617089] mt-1">
-          Manage your account settings and preferences
-        </p>
+      <div className="flex flex-col sm:flex-row justify-between items-end gap-6 border-b border-secondary/5 dark:border-white/5 pb-8">
+        <div>
+          <div className="flex items-center gap-4 mb-2">
+            <span className="h-[1px] w-8 bg-primary"></span>
+            <span className="font-mono text-[10px] text-primary uppercase tracking-widest">
+              Executive Configuration
+            </span>
+          </div>
+          <h1 className="text-4xl font-bold text-secondary dark:text-background-light uppercase tracking-tight">
+            Settings
+          </h1>
+          <p className="font-serif italic text-secondary/60 dark:text-background-light/60 mt-2">
+            Tailor your financial environment.
+          </p>
+        </div>
       </div>
 
       <div className="flex gap-6">
         {/* Sidebar */}
         <div className="w-64 shrink-0">
-          <Card padding={false}>
-            <div className="flex flex-col p-2">
+          <Card
+            padding={false}
+            variant="outline"
+            className="bg-transparent border-none"
+          >
+            <div className="flex flex-col gap-1">
               {tabs.map((tab) => (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-colors ${activeTab === tab.id ? "bg-primary/10 text-primary" : "text-[#617089] hover:bg-gray-50 dark:hover:bg-white/5"}`}
+                  className={`flex items-center gap-3 px-4 py-3 rounded-none text-left transition-all relative ${activeTab === tab.id ? "text-primary bg-primary/5" : "text-secondary/60 dark:text-background-light/60 hover:text-secondary dark:hover:text-background-light hover:bg-secondary/5"}`}
                 >
-                  <span className="material-symbols-outlined">{tab.icon}</span>
-                  <span className="font-medium">{tab.label}</span>
+                  {activeTab === tab.id && (
+                    <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[2px] h-4 bg-primary" />
+                  )}
+                  <span className="material-symbols-outlined text-[20px]">
+                    {tab.icon}
+                  </span>
+                  <span className="font-mono text-[10px] uppercase tracking-widest">
+                    {tab.label}
+                  </span>
                 </button>
               ))}
             </div>
@@ -235,50 +254,53 @@ const Settings = () => {
           )}
 
           {activeTab === "preferences" && (
-            <Card title="Preferences" subtitle="Customize your experience">
-              <div className="flex flex-col gap-6 max-w-md">
-                <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-white/5 rounded-lg">
+            <Card
+              title="Experience Control"
+              subtitle="Personalize your interaction layer"
+            >
+              <div className="flex flex-col gap-8 max-w-md">
+                <div className="flex items-center justify-between p-6 border border-secondary/5 dark:border-white/5 bg-background-alt/30 dark:bg-white/5 rounded-none">
                   <div>
-                    <h4 className="font-medium text-[#111318] dark:text-white">
-                      Dark Mode
+                    <h4 className="font-serif italic text-lg text-secondary dark:text-background-light">
+                      Visual Tone
                     </h4>
-                    <p className="text-sm text-[#617089]">
-                      Switch between light and dark themes
+                    <p className="text-[10px] font-mono uppercase tracking-wider text-secondary/40 dark:text-background-light/40 mt-1">
+                      Toggle dark interface mode
                     </p>
                   </div>
                   <button
                     onClick={() =>
                       document.documentElement.classList.toggle("dark")
                     }
-                    className="relative w-12 h-6 rounded-full bg-gray-200 dark:bg-primary transition-colors"
+                    className="relative w-10 h-5 rounded-none bg-secondary/10 dark:bg-primary transition-colors"
                   >
-                    <span className="absolute left-1 top-1 w-4 h-4 rounded-full bg-white dark:translate-x-6 transition-transform shadow"></span>
+                    <span className="absolute left-1 top-1 w-3 h-3 rounded-none bg-white dark:translate-x-5 transition-transform"></span>
                   </button>
                 </div>
-                <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-white/5 rounded-lg">
+                <div className="flex items-center justify-between p-6 border border-secondary/5 dark:border-white/5 bg-background-alt/30 dark:bg-white/5 rounded-none">
                   <div>
-                    <h4 className="font-medium text-[#111318] dark:text-white">
-                      Currency
+                    <h4 className="font-serif italic text-lg text-secondary dark:text-background-light">
+                      Base Currency
                     </h4>
-                    <p className="text-sm text-[#617089]">
-                      Display currency for amounts
+                    <p className="text-[10px] font-mono uppercase tracking-wider text-secondary/40 dark:text-background-light/40 mt-1">
+                      Primary transactional unit
                     </p>
                   </div>
-                  <span className="text-[#111318] dark:text-white font-medium">
-                    ₹ INR
+                  <span className="font-mono text-xs text-secondary dark:text-background-light bg-secondary/10 dark:bg-white/10 px-2 py-1">
+                    INR / ₹
                   </span>
                 </div>
-                <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-white/5 rounded-lg">
+                <div className="flex items-center justify-between p-6 border border-secondary/5 dark:border-white/5 bg-background-alt/30 dark:bg-white/5 rounded-none">
                   <div>
-                    <h4 className="font-medium text-[#111318] dark:text-white">
-                      Email Notifications
+                    <h4 className="font-serif italic text-lg text-secondary dark:text-background-light">
+                      Broadcasts
                     </h4>
-                    <p className="text-sm text-[#617089]">
-                      Receive weekly spending summaries
+                    <p className="text-[10px] font-mono uppercase tracking-wider text-secondary/40 dark:text-background-light/40 mt-1">
+                      Institutional intelligence alerts
                     </p>
                   </div>
-                  <button className="relative w-12 h-6 rounded-full bg-primary transition-colors">
-                    <span className="absolute left-1 top-1 w-4 h-4 rounded-full bg-white translate-x-6 transition-transform shadow"></span>
+                  <button className="relative w-10 h-5 rounded-none bg-primary transition-colors">
+                    <span className="absolute left-1 top-1 w-3 h-3 rounded-none bg-white translate-x-5 transition-transform"></span>
                   </button>
                 </div>
               </div>

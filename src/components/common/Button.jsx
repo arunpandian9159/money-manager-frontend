@@ -1,11 +1,13 @@
 const variants = {
-  primary: "bg-primary hover:bg-primary/90 text-white shadow-md",
-  success:
-    "bg-success hover:bg-[#059669] text-white shadow-sm shadow-green-200 dark:shadow-none",
-  danger: "bg-danger hover:bg-red-600 text-white",
+  primary: "bg-primary text-white hover:bg-primary-dark shadow-soft",
+  success: "bg-success text-white hover:opacity-90 shadow-soft",
+  danger: "bg-danger text-white hover:opacity-90 shadow-soft",
   secondary:
-    "bg-gray-100 dark:bg-white/10 text-[#617089] dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/20",
-  outline: "border border-[#e0dde3] bg-white text-[#111318] hover:bg-gray-50",
+    "bg-accent-light dark:bg-accent-light/10 text-accent-dark dark:text-accent-light hover:bg-accent-light/80 dark:hover:bg-accent-light/20",
+  outline:
+    "border border-secondary/10 dark:border-background-light/10 bg-transparent text-secondary dark:text-background-light hover:bg-secondary/5 dark:hover:bg-background-light/5",
+  ghost:
+    "bg-transparent text-secondary/70 dark:text-background-light/70 hover:text-secondary dark:hover:text-background-light hover:bg-secondary/5",
 };
 
 const sizes = {
