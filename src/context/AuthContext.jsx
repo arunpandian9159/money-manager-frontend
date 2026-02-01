@@ -25,8 +25,14 @@ export const AuthProvider = ({ children }) => {
           const response = await authAPI.getMe();
           setUser(response.data.user);
         } catch (err) {
-          localStorage.removeItem("token");
-          localStorage.removeItem("user");
+          // Only logout on explicit authentication failure.
+          // For transient failures (e.g. 429 rate limit, 5xx), keep the token
+          // so the user isn't forced to re-login.
+          const status = err?.response?.status;
+          if (status === 401) {
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+          }
         }
       }
       setLoading(false);
