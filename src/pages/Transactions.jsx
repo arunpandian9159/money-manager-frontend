@@ -29,6 +29,19 @@ const CATEGORY_ICONS = {
   others: "more_horiz",
 };
 
+const CATEGORY_COLORS = {
+  fuel: "#FF5252",
+  food: "#FFB300",
+  entertainment: "#7C4DFF",
+  medical: "#00E676",
+  transportation: "#40C4FF",
+  loan_emi: "#FF4081",
+  shopping: "#FFD740",
+  utilities: "#64FFDA",
+  education: "#536DFE",
+  others: "#90A4AE",
+};
+
 const Transactions = () => {
   const [transactions, setTransactions] = useState([]);
   const [accounts, setAccounts] = useState([]);
@@ -46,8 +59,12 @@ const Transactions = () => {
   });
   const [pagination, setPagination] = useState({
     page: 1,
-    limit: 10,
+    limit: 100,
     total: 0,
+  });
+  const [sort, setSort] = useState({
+    field: "date",
+    order: "desc",
   });
   const [formData, setFormData] = useState({
     type: "expense",
@@ -65,7 +82,7 @@ const Transactions = () => {
   useEffect(() => {
     fetchTransactions();
     fetchAccounts();
-  }, [filters, pagination.page]);
+  }, [filters, pagination.page, sort]);
 
   const fetchTransactions = async () => {
     try {
@@ -73,6 +90,8 @@ const Transactions = () => {
       const params = {
         page: pagination.page,
         limit: pagination.limit,
+        sortBy: sort.field,
+        sortOrder: sort.order,
         ...Object.fromEntries(Object.entries(filters).filter(([_, v]) => v)),
       };
       const res = await transactionsAPI.getAll(params);
@@ -99,6 +118,13 @@ const Transactions = () => {
 
   const canEdit = (tx) =>
     differenceInHours(new Date(), new Date(tx.createdAt)) < 12;
+
+  const handleSort = (field) => {
+    setSort((prev) => ({
+      field,
+      order: prev.field === field && prev.order === "desc" ? "asc" : "desc",
+    }));
+  };
 
   const openAddModal = () => {
     setSelectedTransaction(null);
@@ -300,20 +326,95 @@ const Transactions = () => {
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="border-b border-secondary/5 dark:border-white/5">
-                  <th className="py-4 px-6 font-mono text-[10px] uppercase tracking-widest text-secondary/40">
-                    Description
+                  <th
+                    className="py-4 px-6 font-mono text-[10px] uppercase tracking-widest text-secondary/40 cursor-pointer hover:text-primary transition-colors"
+                    onClick={() => handleSort("description")}
+                  >
+                    <div className="flex items-center gap-1">
+                      Description
+                      {sort.field === "description" && (
+                        <span className="material-symbols-outlined text-[14px]">
+                          {sort.order === "asc"
+                            ? "arrow_upward"
+                            : "arrow_downward"}
+                        </span>
+                      )}
+                    </div>
                   </th>
-                  <th className="py-4 px-6 font-mono text-[10px] uppercase tracking-widest text-secondary/40">
-                    Domain
+                  <th
+                    className="py-4 px-6 font-mono text-[10px] uppercase tracking-widest text-secondary/40 cursor-pointer hover:text-primary transition-colors"
+                    onClick={() => handleSort("type")}
+                  >
+                    <div className="flex items-center gap-1">
+                      Type
+                      {sort.field === "type" && (
+                        <span className="material-symbols-outlined text-[14px]">
+                          {sort.order === "asc"
+                            ? "arrow_upward"
+                            : "arrow_downward"}
+                        </span>
+                      )}
+                    </div>
                   </th>
-                  <th className="py-4 px-6 font-mono text-[10px] uppercase tracking-widest text-secondary/40">
-                    Sector
+                  <th
+                    className="py-4 px-6 font-mono text-[10px] uppercase tracking-widest text-secondary/40 cursor-pointer hover:text-primary transition-colors"
+                    onClick={() => handleSort("category")}
+                  >
+                    <div className="flex items-center gap-1">
+                      Domain
+                      {sort.field === "category" && (
+                        <span className="material-symbols-outlined text-[14px]">
+                          {sort.order === "asc"
+                            ? "arrow_upward"
+                            : "arrow_downward"}
+                        </span>
+                      )}
+                    </div>
                   </th>
-                  <th className="py-4 px-6 font-mono text-[10px] uppercase tracking-widest text-secondary/40">
-                    Temporal
+                  <th
+                    className="py-4 px-6 font-mono text-[10px] uppercase tracking-widest text-secondary/40 cursor-pointer hover:text-primary transition-colors"
+                    onClick={() => handleSort("division")}
+                  >
+                    <div className="flex items-center gap-1">
+                      Sector
+                      {sort.field === "division" && (
+                        <span className="material-symbols-outlined text-[14px]">
+                          {sort.order === "asc"
+                            ? "arrow_upward"
+                            : "arrow_downward"}
+                        </span>
+                      )}
+                    </div>
                   </th>
-                  <th className="py-4 px-6 font-mono text-[10px] uppercase tracking-widest text-secondary/40 text-right">
-                    Magnitude
+                  <th
+                    className="py-4 px-6 font-mono text-[10px] uppercase tracking-widest text-secondary/40 cursor-pointer hover:text-primary transition-colors"
+                    onClick={() => handleSort("date")}
+                  >
+                    <div className="flex items-center gap-1">
+                      Temporal
+                      {sort.field === "date" && (
+                        <span className="material-symbols-outlined text-[14px]">
+                          {sort.order === "asc"
+                            ? "arrow_upward"
+                            : "arrow_downward"}
+                        </span>
+                      )}
+                    </div>
+                  </th>
+                  <th
+                    className="py-4 px-6 font-mono text-[10px] uppercase tracking-widest text-secondary/40 text-right cursor-pointer hover:text-primary transition-colors"
+                    onClick={() => handleSort("amount")}
+                  >
+                    <div className="flex items-center justify-end gap-1">
+                      Magnitude
+                      {sort.field === "amount" && (
+                        <span className="material-symbols-outlined text-[14px]">
+                          {sort.order === "asc"
+                            ? "arrow_upward"
+                            : "arrow_downward"}
+                        </span>
+                      )}
+                    </div>
                   </th>
                   <th className="py-4 px-6 font-mono text-[10px] uppercase tracking-widest text-secondary/40 text-center">
                     Actions
@@ -329,26 +430,40 @@ const Transactions = () => {
                     >
                       <td className="py-5 px-6">
                         <div className="flex items-center gap-4">
-                          <span
-                            className={`material-symbols-outlined p-2 rounded-none text-[20px] ${tx.type === "income" ? "bg-accent-light text-accent-dark" : "bg-primary/10 text-primary"}`}
-                          >
-                            {CATEGORY_ICONS[tx.category] || "receipt"}
-                          </span>
                           <span className="font-serif italic text-lg text-secondary dark:text-background-light">
                             {tx.description}
                           </span>
                         </div>
                       </td>
+                      <td className="py-5 px-6">
+                        <span
+                          className={`px-2 py-1 rounded-none text-[10px] font-mono uppercase tracking-widest ${
+                            tx.type === "income"
+                              ? "bg-success/10 text-success"
+                              : "bg-danger/10 text-danger"
+                          }`}
+                        >
+                          {tx.type}
+                        </span>
+                      </td>
                       <td className="py-5 px-6 font-mono text-[11px] uppercase tracking-wider text-secondary/60 dark:text-background-light/60">
-                        {tx.category?.replace("_", " ")}
+                        <div className="flex items-center gap-2">
+                          <span
+                            className="material-symbols-outlined text-[18px]"
+                            style={{
+                              color: CATEGORY_COLORS[tx.category] || "#90A4AE",
+                            }}
+                          >
+                            {CATEGORY_ICONS[tx.category] || "receipt"}
+                          </span>
+                          {tx.category?.replace("_", " ")}
+                        </div>
                       </td>
                       <td className="py-5 px-6">
                         <span
                           className={`px-2 py-1 rounded-none text-[10px] font-mono uppercase tracking-widest ${tx.division === "office" ? "bg-secondary text-background-light" : "bg-accent text-white"}`}
                         >
-                          {tx.division === "office"
-                            ? "Office"
-                            : "Personal"}
+                          {tx.division === "office" ? "Office" : "Personal"}
                         </span>
                       </td>
                       <td className="py-5 px-6">
@@ -404,7 +519,7 @@ const Transactions = () => {
                 ) : (
                   <tr>
                     <td
-                      colSpan="6"
+                      colSpan="7"
                       className="py-12 text-center font-mono text-[10px] uppercase tracking-widest text-secondary/40"
                     >
                       No records found in this domain
