@@ -37,6 +37,7 @@ const Reports = () => {
   const [divisionData, setDivisionData] = useState([]);
   const [trendsData, setTrendsData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedPeriod, setSelectedPeriod] = useState("6");
   const [dateRange, setDateRange] = useState({
     startDate: format(subMonths(new Date(), 6), "yyyy-MM-dd"),
     endDate: format(new Date(), "yyyy-MM-dd"),
@@ -77,6 +78,7 @@ const Reports = () => {
 
   const handlePeriodChange = (e) => {
     const months = parseInt(e.target.value);
+    setSelectedPeriod(e.target.value);
     setDateRange({
       startDate: format(subMonths(new Date(), months), "yyyy-MM-dd"),
       endDate: format(new Date(), "yyyy-MM-dd"),
@@ -116,7 +118,7 @@ const Reports = () => {
             { value: "6", label: "Last 6 Months" },
             { value: "12", label: "Last Year" },
           ]}
-          value="6"
+          value={selectedPeriod}
           onChange={handlePeriodChange}
           className="w-48"
         />
@@ -158,7 +160,7 @@ const Reports = () => {
               <LineChart data={trendsData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
                 <XAxis
-                  dataKey="_id"
+                  dataKey="date"
                   tickFormatter={(value) =>
                     format(new Date(value + "-01"), "MMM yyyy")
                   }
