@@ -85,7 +85,7 @@ const Dashboard = () => {
   const [categoryData, setCategoryData] = useState([]);
   const [divisionData, setDivisionData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [period, setPeriod] = useState("month");
+  const [period, setPeriod] = useState("3months");
   const [accounts, setAccounts] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [formData, setFormData] = useState({
