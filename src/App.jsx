@@ -21,8 +21,16 @@ const ProtectedRoute = ({ children }) => {
 
   if (loading) {
     return (
-      <div className="flex h-screen items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      <div className="flex h-screen items-center justify-center bg-background-light dark:bg-background-dark">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-12 h-12 border border-secondary/10 relative overflow-hidden">
+            <div className="absolute inset-0 bg-primary/20 animate-pulse"></div>
+            <div className="absolute top-0 left-0 h-full w-[2px] bg-primary animate-[loading-bar_1.5s_infinite]"></div>
+          </div>
+          <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-secondary/40 animate-pulse">
+            Establishing Protocol
+          </span>
+        </div>
       </div>
     );
   }
@@ -40,8 +48,16 @@ const PublicRoute = ({ children }) => {
 
   if (loading) {
     return (
-      <div className="flex h-screen items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      <div className="flex h-screen items-center justify-center bg-background-light dark:bg-background-dark">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-12 h-12 border border-secondary/10 relative overflow-hidden">
+            <div className="absolute inset-0 bg-primary/20 animate-pulse"></div>
+            <div className="absolute top-0 left-0 h-full w-[2px] bg-primary animate-[loading-bar_1.5s_infinite]"></div>
+          </div>
+          <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-secondary/40 animate-pulse">
+            Establishing Protocol
+          </span>
+        </div>
       </div>
     );
   }
