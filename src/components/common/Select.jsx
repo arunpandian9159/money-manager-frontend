@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { ChevronDown } from "lucide-react";
 
 const Select = ({
   label,
@@ -122,13 +123,13 @@ const Select = ({
           >
             {selectedOption ? selectedOption.label : placeholder}
           </span>
-          <span
-            className={`material-symbols-outlined transition-transform duration-500 text-secondary/40 dark:text-white/40
+          <ChevronDown
+            size={18}
+            className={`transition-transform duration-500 text-secondary/40 dark:text-white/40
               ${isOpen ? "rotate-180 text-primary" : ""}
             `}
-          >
-            expand_more
-          </span>
+            strokeWidth={1.5}
+          />
         </div>
 
         {isOpen && (

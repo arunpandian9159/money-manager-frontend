@@ -8,7 +8,7 @@ const iconColors = {
 const StatCard = ({
   title,
   value,
-  icon,
+  icon: Icon,
   iconColor = "blue",
   change,
   changeType = "positive",
@@ -20,9 +20,7 @@ const StatCard = ({
           <div
             className={`p-2 rounded-none transition-colors ${iconColors[iconColor]}`}
           >
-            <span className="material-symbols-outlined text-[20px]">
-              {icon}
-            </span>
+            {Icon && <Icon size={20} strokeWidth={1.5} />}
           </div>
           <p className="font-mono text-[14px] uppercase tracking-widest text-secondary/50 dark:text-background-light/40 group-hover:text-primary transition-colors">
             {title}

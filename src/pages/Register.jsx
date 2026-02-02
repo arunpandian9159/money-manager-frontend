@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { Eye, EyeOff } from "lucide-react";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -205,9 +206,11 @@ const Register = () => {
               onClick={() => setShowPassword(!showPassword)}
               className="absolute right-3 top-1/2 -translate-y-1/2 text-secondary/30 hover:text-secondary transition-colors"
             >
-              <span className="material-symbols-outlined text-[18px]">
-                {showPassword ? "visibility_off" : "visibility"}
-              </span>
+              {showPassword ? (
+                <EyeOff size={18} strokeWidth={1.5} />
+              ) : (
+                <Eye size={18} strokeWidth={1.5} />
+              )}
             </button>
           </div>
         </div>

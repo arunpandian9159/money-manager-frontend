@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { authAPI } from "../api";
 import { Button, Card, Input } from "../components/common";
+import { User, Shield, Sliders } from "lucide-react";
 
 const Settings = () => {
   const { user, updateProfile } = useAuth();
@@ -71,9 +72,9 @@ const Settings = () => {
   };
 
   const tabs = [
-    { id: "profile", label: "Profile", icon: "person" },
-    { id: "security", label: "Security", icon: "lock" },
-    { id: "preferences", label: "Preferences", icon: "tune" },
+    { id: "profile", label: "Profile", icon: User },
+    { id: "security", label: "Security", icon: Shield },
+    { id: "preferences", label: "Preferences", icon: Sliders },
   ];
 
   return (
@@ -113,9 +114,7 @@ const Settings = () => {
                   {activeTab === tab.id && (
                     <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[2px] h-4 bg-primary" />
                   )}
-                  <span className="material-symbols-outlined text-[20px]">
-                    {tab.icon}
-                  </span>
+                  <tab.icon size={20} strokeWidth={1.5} />
                   <span className="font-mono text-[10px] uppercase tracking-widest">
                     {tab.label}
                   </span>

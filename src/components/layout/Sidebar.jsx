@@ -1,17 +1,24 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import {
+  LayoutDashboard,
+  ArrowLeftRight,
+  PieChart,
+  Wallet,
+  Settings,
+  LogOut,
+} from "lucide-react";
 
 const navItems = [
   {
     path: "/app/dashboard",
     label: "Dashboard",
-    icon: "dashboard",
-    filled: true,
+    icon: LayoutDashboard,
   },
-  { path: "/app/transactions", label: "Transactions", icon: "receipt_long" },
-  { path: "/app/reports", label: "Reports", icon: "pie_chart" },
-  { path: "/app/accounts", label: "Accounts", icon: "credit_card" },
-  { path: "/app/settings", label: "Settings", icon: "settings" },
+  { path: "/app/transactions", label: "Transactions", icon: ArrowLeftRight },
+  { path: "/app/reports", label: "Reports", icon: PieChart },
+  { path: "/app/accounts", label: "Accounts", icon: Wallet },
+  { path: "/app/settings", label: "Settings", icon: Settings },
 ];
 
 const Sidebar = () => {
@@ -74,16 +81,11 @@ const Sidebar = () => {
                 {isActive && (
                   <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[2px] h-4 bg-primary" />
                 )}
-                <span
-                  className={`material-symbols-outlined text-[20px] ${!isActive && "group-hover:translate-x-1"} transition-transform`}
-                  style={
-                    isActive && item.filled
-                      ? { fontVariationSettings: "'FILL' 1" }
-                      : {}
-                  }
-                >
-                  {item.icon}
-                </span>
+                <item.icon
+                  size={20}
+                  strokeWidth={isActive ? 2 : 1.5}
+                  className={`${!isActive && "group-hover:translate-x-1"} transition-transform`}
+                />
                 <p
                   className={`text-sm tracking-wide ${isActive ? "font-bold" : "font-medium"}`}
                 >
@@ -101,7 +103,7 @@ const Sidebar = () => {
           onClick={handleLogout}
           className="flex w-full cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-none h-12 px-4 bg-transparent border border-secondary/10 dark:border-white/10 text-secondary/60 dark:text-background-light/60 hover:border-danger hover:text-danger dark:hover:border-danger dark:hover:text-danger transition-all text-xs font-mono uppercase tracking-widest"
         >
-          <span className="material-symbols-outlined text-[18px]">logout</span>
+          <LogOut size={18} strokeWidth={1.5} />
           <span className="truncate">Sign Out</span>
         </button>
       </div>

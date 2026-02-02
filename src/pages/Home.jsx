@@ -1,4 +1,13 @@
 import { Link } from "react-router-dom";
+import {
+  Play,
+  LayoutDashboard,
+  Wallet,
+  Split,
+  PieChart,
+  Lock,
+  Quote,
+} from "lucide-react";
 
 const Home = () => {
   return (
@@ -102,9 +111,7 @@ const Home = () => {
                 </Link>
                 <button className="group flex items-center justify-center gap-4 font-mono text-secondary uppercase text-[10px] tracking-widest hover:text-primary transition-colors">
                   <span className="border border-secondary/10 w-12 h-12 flex items-center justify-center rounded-none group-hover:border-primary transition-colors">
-                    <span className="material-symbols-outlined text-lg">
-                      play_arrow
-                    </span>
+                    <Play size={18} fill="currentColor" />
                   </span>
                   Technical Methodology
                 </button>
@@ -126,9 +133,11 @@ const Home = () => {
                       </div>
                     </div>
                     <div className="flex-1 bg-gradient-to-br from-background-light to-background-alt flex items-center justify-center">
-                      <span className="material-symbols-outlined text-8xl text-secondary/5">
-                        dashboard
-                      </span>
+                      <LayoutDashboard
+                        size={96}
+                        strokeWidth={0.5}
+                        className="text-secondary/5"
+                      />
                     </div>
                   </div>
                 </div>
@@ -234,9 +243,7 @@ const Home = () => {
             <div className="md:col-span-6 lg:col-span-7 bg-white dark:bg-white/5 p-12 md:p-16 border border-secondary/5 hover:shadow-2xl transition-all duration-500 group min-h-[450px] flex flex-col justify-between rounded-none">
               <div className="flex justify-between items-start">
                 <div className="w-16 h-16 bg-secondary text-background-light flex items-center justify-center group-hover:bg-primary transition-colors">
-                  <span className="material-symbols-outlined text-2xl">
-                    account_balance_wallet
-                  </span>
+                  <Wallet size={24} strokeWidth={1.5} />
                 </div>
                 <span className="font-mono text-[10px] font-bold text-secondary/20">
                   INSTANCE_01
@@ -257,9 +264,7 @@ const Home = () => {
               <div className="absolute top-0 right-0 w-80 h-80 bg-white/5 rounded-full blur-3xl -mr-40 -mt-40"></div>
               <div className="flex justify-between items-start relative z-10">
                 <div className="w-16 h-16 bg-white/10 text-white flex items-center justify-center backdrop-blur-sm border border-white/5">
-                  <span className="material-symbols-outlined text-2xl">
-                    splitscreen
-                  </span>
+                  <Split size={24} strokeWidth={1.5} />
                 </div>
                 <span className="font-mono text-[10px] font-bold text-white/20">
                   INSTANCE_02
@@ -277,17 +282,17 @@ const Home = () => {
               </div>
             </div>
             <div className="md:col-span-3 lg:col-span-4 bg-accent/10 p-12 border border-accent/20 hover:bg-accent/20 transition-colors flex flex-col justify-center items-center text-center gap-6 min-h-[280px]">
-              <span className="material-symbols-outlined text-4xl text-secondary">
-                pie_chart
-              </span>
+              <PieChart
+                size={36}
+                strokeWidth={1.5}
+                className="text-secondary"
+              />
               <h4 className="font-mono font-bold text-xs text-secondary uppercase tracking-[0.2em]">
                 Visual Analytics
               </h4>
             </div>
             <div className="md:col-span-3 lg:col-span-4 bg-primary/5 p-12 border border-primary/10 hover:bg-primary/10 transition-colors flex flex-col justify-center items-center text-center gap-6 min-h-[280px]">
-              <span className="material-symbols-outlined text-4xl text-primary">
-                lock_clock
-              </span>
+              <Lock size={36} strokeWidth={1.5} className="text-primary" />
               <h4 className="font-mono font-bold text-xs text-secondary uppercase tracking-[0.2em]">
                 Edit Protocols
               </h4>
@@ -387,9 +392,11 @@ const Home = () => {
         className="py-32 px-6 bg-white dark:bg-transparent border-y border-secondary/5"
       >
         <div className="max-w-4xl mx-auto text-center">
-          <span className="material-symbols-outlined text-6xl text-primary/10 mb-8">
-            format_quote
-          </span>
+          <Quote
+            size={64}
+            strokeWidth={1}
+            className="text-primary/10 mb-8 mx-auto"
+          />
           <blockquote className="font-serif text-3xl md:text-4xl lg:text-5xl text-secondary dark:text-background-light italic leading-tight mb-12">
             "Money Manager isn't just a budgeting tool; it is a piece of
             financial architecture that forces you to respect your own wealth."

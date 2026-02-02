@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { X } from "lucide-react";
 
 const Modal = ({
   isOpen,
@@ -62,7 +63,7 @@ const Modal = ({
                 onClick={onClose}
                 className="p-2 text-[#617089] hover:text-[#111318] dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition-colors"
               >
-                <span className="material-symbols-outlined">close</span>
+                <X size={20} strokeWidth={1.5} />
               </button>
             )}
           </div>

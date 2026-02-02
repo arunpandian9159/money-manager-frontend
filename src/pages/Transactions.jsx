@@ -2,6 +2,27 @@ import { useState, useEffect } from "react";
 import { format, differenceInHours } from "date-fns";
 import { Button, Card, Modal, Input, Select } from "../components/common";
 import { transactionsAPI, accountsAPI } from "../api";
+import {
+  Fuel,
+  Utensils,
+  Film,
+  Activity,
+  Car,
+  HandCoins,
+  ShoppingBag,
+  Zap,
+  GraduationCap,
+  MoreHorizontal,
+  Plus,
+  ChevronUp,
+  ChevronDown,
+  Edit2,
+  Trash2,
+  Lock,
+  TrendingUp,
+  TrendingDown,
+  Receipt,
+} from "lucide-react";
 
 const CATEGORIES = [
   { value: "fuel", label: "Fuel" },
@@ -17,16 +38,16 @@ const CATEGORIES = [
 ];
 
 const CATEGORY_ICONS = {
-  fuel: "local_gas_station",
-  food: "restaurant",
-  entertainment: "movie",
-  medical: "medical_services",
-  transportation: "directions_car",
-  loan_emi: "payments",
-  shopping: "shopping_bag",
-  utilities: "bolt",
-  education: "school",
-  others: "more_horiz",
+  fuel: Fuel,
+  food: Utensils,
+  entertainment: Film,
+  medical: Activity,
+  transportation: Car,
+  loan_emi: HandCoins,
+  shopping: ShoppingBag,
+  utilities: Zap,
+  education: GraduationCap,
+  others: MoreHorizontal,
 };
 
 const CATEGORY_COLORS = {
@@ -222,7 +243,7 @@ const Transactions = () => {
             A comprehensive record of your capital movement.
           </p>
         </div>
-        <Button icon="add" onClick={openAddModal}>
+        <Button icon={Plus} onClick={openAddModal}>
           Add Transaction
         </Button>
       </div>
@@ -332,13 +353,12 @@ const Transactions = () => {
                   >
                     <div className="flex items-center gap-1">
                       Description
-                      {sort.field === "description" && (
-                        <span className="material-symbols-outlined text-[14px]">
-                          {sort.order === "asc"
-                            ? "arrow_upward"
-                            : "arrow_downward"}
-                        </span>
-                      )}
+                      {sort.field === "description" &&
+                        (sort.order === "asc" ? (
+                          <ChevronUp size={14} className="ml-1" />
+                        ) : (
+                          <ChevronDown size={14} className="ml-1" />
+                        ))}
                     </div>
                   </th>
                   <th
@@ -347,13 +367,12 @@ const Transactions = () => {
                   >
                     <div className="flex items-center gap-1">
                       Type
-                      {sort.field === "type" && (
-                        <span className="material-symbols-outlined text-[14px]">
-                          {sort.order === "asc"
-                            ? "arrow_upward"
-                            : "arrow_downward"}
-                        </span>
-                      )}
+                      {sort.field === "type" &&
+                        (sort.order === "asc" ? (
+                          <ChevronUp size={14} className="ml-1" />
+                        ) : (
+                          <ChevronDown size={14} className="ml-1" />
+                        ))}
                     </div>
                   </th>
                   <th
@@ -362,13 +381,12 @@ const Transactions = () => {
                   >
                     <div className="flex items-center gap-1">
                       Domain
-                      {sort.field === "category" && (
-                        <span className="material-symbols-outlined text-[14px]">
-                          {sort.order === "asc"
-                            ? "arrow_upward"
-                            : "arrow_downward"}
-                        </span>
-                      )}
+                      {sort.field === "category" &&
+                        (sort.order === "asc" ? (
+                          <ChevronUp size={14} className="ml-1" />
+                        ) : (
+                          <ChevronDown size={14} className="ml-1" />
+                        ))}
                     </div>
                   </th>
                   <th
@@ -377,13 +395,12 @@ const Transactions = () => {
                   >
                     <div className="flex items-center gap-1">
                       Sector
-                      {sort.field === "division" && (
-                        <span className="material-symbols-outlined text-[14px]">
-                          {sort.order === "asc"
-                            ? "arrow_upward"
-                            : "arrow_downward"}
-                        </span>
-                      )}
+                      {sort.field === "division" &&
+                        (sort.order === "asc" ? (
+                          <ChevronUp size={14} className="ml-1" />
+                        ) : (
+                          <ChevronDown size={14} className="ml-1" />
+                        ))}
                     </div>
                   </th>
                   <th
@@ -392,13 +409,12 @@ const Transactions = () => {
                   >
                     <div className="flex items-center gap-1">
                       Temporal
-                      {sort.field === "date" && (
-                        <span className="material-symbols-outlined text-[14px]">
-                          {sort.order === "asc"
-                            ? "arrow_upward"
-                            : "arrow_downward"}
-                        </span>
-                      )}
+                      {sort.field === "date" &&
+                        (sort.order === "asc" ? (
+                          <ChevronUp size={14} className="ml-1" />
+                        ) : (
+                          <ChevronDown size={14} className="ml-1" />
+                        ))}
                     </div>
                   </th>
                   <th
@@ -407,13 +423,12 @@ const Transactions = () => {
                   >
                     <div className="flex items-center justify-end gap-1">
                       Magnitude
-                      {sort.field === "amount" && (
-                        <span className="material-symbols-outlined text-[14px]">
-                          {sort.order === "asc"
-                            ? "arrow_upward"
-                            : "arrow_downward"}
-                        </span>
-                      )}
+                      {sort.field === "amount" &&
+                        (sort.order === "asc" ? (
+                          <ChevronUp size={14} className="ml-1" />
+                        ) : (
+                          <ChevronDown size={14} className="ml-1" />
+                        ))}
                     </div>
                   </th>
                   <th className="py-4 px-6 font-mono text-[10px] uppercase tracking-widest text-secondary/40 text-center">
@@ -448,14 +463,27 @@ const Transactions = () => {
                       </td>
                       <td className="py-5 px-6 font-mono text-[11px] uppercase tracking-wider text-secondary/60 dark:text-background-light/60">
                         <div className="flex items-center gap-2">
-                          <span
-                            className="material-symbols-outlined text-[18px]"
-                            style={{
-                              color: CATEGORY_COLORS[tx.category] || "#90A4AE",
-                            }}
-                          >
-                            {CATEGORY_ICONS[tx.category] || "receipt"}
-                          </span>
+                          {CATEGORY_ICONS[tx.category] ? (
+                            (() => {
+                              const Icon = CATEGORY_ICONS[tx.category];
+                              return (
+                                <Icon
+                                  size={18}
+                                  style={{
+                                    color:
+                                      CATEGORY_COLORS[tx.category] || "#90A4AE",
+                                  }}
+                                  strokeWidth={1.5}
+                                />
+                              );
+                            })()
+                          ) : (
+                            <Receipt
+                              size={18}
+                              className="text-secondary/40"
+                              strokeWidth={1.5}
+                            />
+                          )}
                           {tx.category?.replace("_", " ")}
                         </div>
                       </td>
@@ -488,9 +516,7 @@ const Transactions = () => {
                               className="p-2 rounded-none hover:bg-secondary/10 dark:hover:bg-white/10 text-secondary/60 dark:text-background-light/60"
                               aria-label="Edit entry"
                             >
-                              <span className="material-symbols-outlined text-[18px]">
-                                edit
-                              </span>
+                              <Edit2 size={18} strokeWidth={1.5} />
                             </button>
                           ) : (
                             <button
@@ -498,9 +524,7 @@ const Transactions = () => {
                               className="p-2 rounded-none opacity-30 cursor-not-allowed text-secondary/60"
                               title="Temporal window closed"
                             >
-                              <span className="material-symbols-outlined text-[18px]">
-                                lock
-                              </span>
+                              <Lock size={18} strokeWidth={1.5} />
                             </button>
                           )}
                           <button
@@ -508,9 +532,7 @@ const Transactions = () => {
                             className="p-2 rounded-none hover:bg-danger/10 text-danger"
                             aria-label="Remove entry"
                           >
-                            <span className="material-symbols-outlined text-[18px]">
-                              delete
-                            </span>
+                            <Trash2 size={18} strokeWidth={1.5} />
                           </button>
                         </div>
                       </td>
@@ -581,9 +603,11 @@ const Transactions = () => {
                 }
                 className="hidden"
               />
-              <span className="material-symbols-outlined text-green-600">
-                trending_up
-              </span>
+              <TrendingUp
+                className="text-green-600"
+                size={20}
+                strokeWidth={1.5}
+              />
               Income
             </label>
             <label
@@ -599,9 +623,11 @@ const Transactions = () => {
                 }
                 className="hidden"
               />
-              <span className="material-symbols-outlined text-red-600">
-                trending_down
-              </span>
+              <TrendingDown
+                className="text-red-600"
+                size={20}
+                strokeWidth={1.5}
+              />
               Expense
             </label>
           </div>

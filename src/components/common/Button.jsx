@@ -20,7 +20,7 @@ const Button = ({
   children,
   variant = "primary",
   size = "md",
-  icon,
+  icon: Icon,
   iconPosition = "left",
   fullWidth = false,
   disabled = false,
@@ -51,17 +51,9 @@ const Button = ({
         <span className="animate-spin rounded-full h-4 w-4 border-2 border-current border-t-transparent" />
       ) : (
         <>
-          {icon && iconPosition === "left" && (
-            <span className="material-symbols-outlined text-[20px]">
-              {icon}
-            </span>
-          )}
+          {Icon && iconPosition === "left" && <Icon size={20} />}
           {children}
-          {icon && iconPosition === "right" && (
-            <span className="material-symbols-outlined text-[20px]">
-              {icon}
-            </span>
-          )}
+          {Icon && iconPosition === "right" && <Icon size={20} />}
         </>
       )}
     </button>

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { Wallet, Mail, Lock, Eye, EyeOff } from "lucide-react";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -33,9 +34,7 @@ const Login = () => {
       <div className="mb-12 flex flex-col items-center">
         <div className="flex items-center gap-3 mb-10">
           <div className="flex h-10 w-10 items-center justify-center rounded-none bg-secondary text-background-light shadow-xl shadow-secondary/10">
-            <span className="material-symbols-outlined text-[20px]">
-              account_balance_wallet
-            </span>
+            <Wallet size={20} strokeWidth={1.5} />
           </div>
           <span className="text-xl font-bold uppercase tracking-[0.2em] text-secondary dark:text-background-light">
             Money Manager
@@ -76,9 +75,7 @@ const Login = () => {
           </label>
           <div className="group relative flex w-full items-center rounded-none border border-secondary/10 bg-white dark:bg-white/5 transition-all duration-300 focus-within:border-primary">
             <div className="pointer-events-none flex h-full w-12 items-center justify-center text-secondary/30 transition-colors group-focus-within:text-primary">
-              <span className="material-symbols-outlined text-[18px]">
-                mail
-              </span>
+              <Mail size={18} strokeWidth={1.5} />
             </div>
             <input
               className="h-12 w-full border-0 bg-transparent p-0 pr-4 text-sm text-secondary dark:text-background-light placeholder:text-secondary/20 focus:outline-none focus:ring-0 font-mono"
@@ -103,9 +100,7 @@ const Login = () => {
           </label>
           <div className="group relative flex w-full items-center rounded-none border border-secondary/10 bg-white dark:bg-white/5 transition-all duration-300 focus-within:border-primary">
             <div className="pointer-events-none flex h-full w-12 items-center justify-center text-secondary/30 transition-colors group-focus-within:text-primary">
-              <span className="material-symbols-outlined text-[18px]">
-                lock
-              </span>
+              <Lock size={18} strokeWidth={1.5} />
             </div>
             <input
               className="h-12 w-full border-0 bg-transparent p-0 pr-4 text-sm text-secondary dark:text-background-light placeholder:text-secondary/20 focus:outline-none focus:ring-0 font-mono"
@@ -122,9 +117,11 @@ const Login = () => {
               onClick={() => setShowPassword(!showPassword)}
               className="flex h-full w-12 items-center justify-center text-secondary/30 hover:text-secondary transition-colors"
             >
-              <span className="material-symbols-outlined text-[18px]">
-                {showPassword ? "visibility" : "visibility_off"}
-              </span>
+              {showPassword ? (
+                <EyeOff size={18} strokeWidth={1.5} />
+              ) : (
+                <Eye size={18} strokeWidth={1.5} />
+              )}
             </button>
           </div>
         </div>

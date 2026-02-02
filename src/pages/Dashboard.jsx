@@ -29,6 +29,24 @@ import {
   Input,
 } from "../components/common";
 import { transactionsAPI, reportsAPI, accountsAPI } from "../api";
+import {
+  Fuel,
+  Utensils,
+  Film,
+  Activity,
+  Car,
+  HandCoins,
+  ShoppingBag,
+  Zap,
+  GraduationCap,
+  MoreHorizontal,
+  Plus,
+  TrendingUp,
+  TrendingDown,
+  Landmark,
+  ListOrdered,
+  Receipt,
+} from "lucide-react";
 
 const CATEGORIES = [
   { value: "fuel", label: "Fuel" },
@@ -52,16 +70,16 @@ const PERIOD_OPTIONS = [
 ];
 
 const CATEGORY_ICONS = {
-  fuel: "local_gas_station",
-  food: "restaurant",
-  entertainment: "movie",
-  medical: "medical_services",
-  transportation: "directions_car",
-  loan_emi: "payments",
-  shopping: "shopping_bag",
-  utilities: "bolt",
-  education: "school",
-  others: "more_horiz",
+  fuel: Fuel,
+  food: Utensils,
+  entertainment: Film,
+  medical: Activity,
+  transportation: Car,
+  loan_emi: HandCoins,
+  shopping: ShoppingBag,
+  utilities: Zap,
+  education: GraduationCap,
+  others: MoreHorizontal,
 };
 
 const CATEGORY_COLORS = {
@@ -261,7 +279,7 @@ const Dashboard = () => {
             onChange={(e) => setPeriod(e.target.value)}
             className="w-48"
           />
-          <Button icon="add" onClick={openAddModal}>
+          <Button icon={Plus} onClick={openAddModal}>
             Add Transaction
           </Button>
         </div>
@@ -272,25 +290,25 @@ const Dashboard = () => {
         <StatCard
           title="Total Income"
           value={`₹${summary.totalIncome?.toLocaleString() || 0}`}
-          icon="trending_up"
+          icon={TrendingUp}
           iconColor="green"
         />
         <StatCard
           title="Total Expenses"
           value={`₹${summary.totalExpenses?.toLocaleString() || 0}`}
-          icon="trending_down"
+          icon={TrendingDown}
           iconColor="red"
         />
         <StatCard
           title="Net Balance"
           value={`₹${netBalance.toLocaleString()}`}
-          icon="account_balance"
+          icon={Landmark}
           iconColor={netBalance >= 0 ? "green" : "red"}
         />
         <StatCard
           title="Transactions"
           value={summary.transactionCount || 0}
-          icon="receipt_long"
+          icon={ListOrdered}
           iconColor="blue"
         />
       </div>
@@ -477,14 +495,27 @@ const Dashboard = () => {
                     </td>
                     <td className="py-5 px-6 font-mono text-[13px] uppercase tracking-wider text-secondary/60 dark:text-background-light/60">
                       <div className="flex items-center gap-2">
-                        <span
-                          className="material-symbols-outlined text-[20px]"
-                          style={{
-                            color: CATEGORY_COLORS[tx.category] || "#90A4AE",
-                          }}
-                        >
-                          {CATEGORY_ICONS[tx.category] || "receipt"}
-                        </span>
+                        {CATEGORY_ICONS[tx.category] ? (
+                          (() => {
+                            const Icon = CATEGORY_ICONS[tx.category];
+                            return (
+                              <Icon
+                                size={18}
+                                style={{
+                                  color:
+                                    CATEGORY_COLORS[tx.category] || "#90A4AE",
+                                }}
+                                strokeWidth={1.5}
+                              />
+                            );
+                          })()
+                        ) : (
+                          <Receipt
+                            size={18}
+                            className="text-secondary/40"
+                            strokeWidth={1.5}
+                          />
+                        )}
                         {tx.category?.replace("_", " ")}
                       </div>
                     </td>

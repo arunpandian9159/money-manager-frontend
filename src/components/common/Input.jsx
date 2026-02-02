@@ -1,9 +1,10 @@
 import { useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
 
 const Input = ({
   label,
   type = "text",
-  icon,
+  icon: Icon,
   error,
   id,
   name,
@@ -40,11 +41,9 @@ const Input = ({
         }
       `}
       >
-        {icon && (
+        {Icon && (
           <div className="pointer-events-none flex h-full w-12 items-center justify-center text-[#726a81]">
-            <span className="material-symbols-outlined text-[20px]">
-              {icon}
-            </span>
+            <Icon size={20} strokeWidth={1.5} />
           </div>
         )}
         <input
@@ -71,9 +70,11 @@ const Input = ({
             onClick={() => setShowPassword(!showPassword)}
             className="flex h-full w-12 items-center justify-center text-[#726a81] hover:text-[#141216] dark:hover:text-white"
           >
-            <span className="material-symbols-outlined text-[20px]">
-              {showPassword ? "visibility" : "visibility_off"}
-            </span>
+            {showPassword ? (
+              <EyeOff size={20} strokeWidth={1.5} />
+            ) : (
+              <Eye size={20} strokeWidth={1.5} />
+            )}
           </button>
         )}
       </div>

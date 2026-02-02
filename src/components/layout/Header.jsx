@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "../../context/AuthContext";
+import { Search, Bell } from "lucide-react";
 
 const Header = ({ onSearch }) => {
   const { user } = useAuth();
@@ -18,9 +19,7 @@ const Header = ({ onSearch }) => {
       <div className="w-[480px]">
         <div className="relative flex w-full items-center h-12 transition-all">
           <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-secondary/40 dark:text-background-light/40">
-            <span className="material-symbols-outlined text-[18px]">
-              search
-            </span>
+            <Search size={18} strokeWidth={1.5} />
           </div>
           <input
             type="text"
@@ -36,9 +35,7 @@ const Header = ({ onSearch }) => {
       <div className="flex items-center gap-8">
         {/* Notification Bell */}
         <button className="relative p-2 text-secondary/60 dark:text-background-light/60 hover:text-primary transition-colors">
-          <span className="material-symbols-outlined text-[22px]">
-            notifications
-          </span>
+          <Bell size={22} strokeWidth={1.5} />
           <span className="absolute top-2 right-2.5 block h-1.5 w-1.5 rounded-none bg-primary"></span>
         </button>
 

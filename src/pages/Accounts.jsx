@@ -9,6 +9,18 @@ import {
   StatCard,
 } from "../components/common";
 import { accountsAPI, transactionsAPI } from "../api";
+import {
+  Landmark,
+  PiggyBank,
+  CreditCard,
+  ArrowLeftRight,
+  Plus,
+  Wallet,
+  Calculator,
+  History,
+  Edit2,
+  Trash2,
+} from "lucide-react";
 
 const ACCOUNT_TYPES = [
   { value: "checking", label: "Checking" },
@@ -17,9 +29,9 @@ const ACCOUNT_TYPES = [
 ];
 
 const ACCOUNT_ICONS = {
-  checking: "account_balance",
-  savings: "savings",
-  credit: "credit_card",
+  checking: Landmark,
+  savings: PiggyBank,
+  credit: CreditCard,
 };
 
 const Accounts = () => {
@@ -201,7 +213,7 @@ const Accounts = () => {
         <div className="flex gap-4">
           <Button
             variant="outline"
-            icon="sync_alt"
+            icon={ArrowLeftRight}
             onClick={() => {
               setFormError("");
               setTransferModalOpen(true);
@@ -209,7 +221,7 @@ const Accounts = () => {
           >
             Transfer Capital
           </Button>
-          <Button icon="add" onClick={openAddModal}>
+          <Button icon={Plus} onClick={openAddModal}>
             Register Account
           </Button>
         </div>
@@ -220,19 +232,19 @@ const Accounts = () => {
         <StatCard
           title="Total Balance"
           value={`₹${summary.totalBalance?.toLocaleString() || 0}`}
-          icon="account_balance_wallet"
+          icon={Wallet}
           iconColor="blue"
         />
         <StatCard
           title="Total Accounts"
           value={summary.accountCount || accounts.length}
-          icon="credit_card"
+          icon={CreditCard}
           iconColor="green"
         />
         <StatCard
           title="Average Balance"
           value={`₹${accounts.length > 0 ? Math.round(summary.totalBalance / accounts.length).toLocaleString() : 0}`}
-          icon="calculate"
+          icon={Calculator}
           iconColor="orange"
         />
       </div>
@@ -250,26 +262,23 @@ const Accounts = () => {
                 <div
                   className={`p-2 rounded-none ${account.type === "credit" ? "bg-primary/10 text-primary" : account.type === "savings" ? "bg-accent/10 text-accent" : "bg-secondary text-background-light"}`}
                 >
-                  <span className="material-symbols-outlined text-[20px]">
-                    {ACCOUNT_ICONS[account.type]}
-                  </span>
+                  {(() => {
+                    const Icon = ACCOUNT_ICONS[account.type];
+                    return <Icon size={20} strokeWidth={1.5} />;
+                  })()}
                 </div>
                 <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                   <button
                     onClick={() => openEditModal(account)}
                     className="p-2 rounded-none hover:bg-secondary/10 dark:hover:bg-white/10 text-secondary/40 dark:text-background-light/40 hover:text-secondary dark:hover:text-background-light"
                   >
-                    <span className="material-symbols-outlined text-[18px]">
-                      edit
-                    </span>
+                    <Edit2 size={18} strokeWidth={1.5} />
                   </button>
                   <button
                     onClick={() => openDeleteModal(account)}
                     className="p-2 rounded-none hover:bg-danger/10 text-danger"
                   >
-                    <span className="material-symbols-outlined text-[18px]">
-                      delete
-                    </span>
+                    <Trash2 size={18} strokeWidth={1.5} />
                   </button>
                 </div>
               </div>
@@ -302,7 +311,7 @@ const Accounts = () => {
                 fullWidth
                 onClick={() => openHistoryModal(account)}
                 className="mt-8 border-t border-secondary/5 dark:border-white/5 rounded-none pt-4 text-[10px] font-mono uppercase tracking-widest"
-                icon="history"
+                icon={History}
               >
                 Capital Evolution
               </Button>

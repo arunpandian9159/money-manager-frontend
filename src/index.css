@@ -44,24 +44,6 @@ h6 {
   @apply outline-none ring-2 ring-primary ring-offset-2 ring-offset-background-light dark:ring-offset-background-dark;
 }
 
-/* Material Symbols customization */
-.material-symbols-outlined {
-  font-variation-settings:
-    "FILL" 0,
-    "wght" 300,
-    /* Thinner icons for premium look */ "GRAD" 0,
-    "opsz" 24;
-  @apply transition-all duration-200;
-}
-
-.material-symbols-outlined.filled {
-  font-variation-settings:
-    "FILL" 1,
-    "wght" 300,
-    "GRAD" 0,
-    "opsz" 24;
-}
-
 /* Editorial Glass Effect */
 .glass-panel {
   @apply bg-white/70 dark:bg-secondary/70 backdrop-blur-md border border-white/20 dark:border-white/5;
