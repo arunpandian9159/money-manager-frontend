@@ -168,7 +168,6 @@ const TransactionModal = ({
         <div className="absolute top-4 right-4 text-primary">
           <CheckCircle2
             size={20}
-            fill="currentColor"
             className="text-primary-foreground"
           />
         </div>
@@ -224,7 +223,7 @@ const TransactionModal = ({
 
         {/* Amount Field */}
         <div className="flex flex-col items-center gap-2">
-          <label className="font-mono text-[10px] uppercase tracking-widest text-secondary/40">
+          <label className="font-mono text-[16px] uppercase tracking-widest text-secondary">
             Amount
           </label>
           <div className="flex items-center gap-3 w-full justify-center group">
@@ -233,7 +232,7 @@ const TransactionModal = ({
             </span>
             <input
               type="number"
-              step="0.01"
+              step="1"
               value={formData.amount}
               onChange={(e) =>
                 setFormData({ ...formData, amount: e.target.value })
@@ -255,7 +254,7 @@ const TransactionModal = ({
 
         {/* Division Selection */}
         <div className="flex flex-col gap-3">
-          <label className="font-mono text-[10px] uppercase tracking-widest text-secondary/40">
+          <label className="font-mono text-[14px] uppercase tracking-widest text-secondary">
             Division
           </label>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -279,9 +278,12 @@ const TransactionModal = ({
         </div>
 
         {/* Description */}
-        <Input
-          label="Description"
-          placeholder="What is this for?"
+        <div className="flex flex-col gap-3">
+          <label className="font-mono text-[14px] uppercase tracking-widest text-secondary">
+            Description
+          </label>
+          <Input
+            placeholder="What is this for?"
           value={formData.description}
           onChange={(e) =>
             setFormData({ ...formData, description: e.target.value })
@@ -289,6 +291,7 @@ const TransactionModal = ({
           required
           className="w-full"
         />
+        </div>
 
         {/* Category & Date/Time Row */}
         <div className="grid grid-cols-1 sm:grid-cols-12 gap-6">
@@ -302,7 +305,7 @@ const TransactionModal = ({
             className="sm:col-span-5"
           />
           <div className="flex flex-col gap-2 sm:col-span-7">
-            <label className="font-mono text-[10px] uppercase tracking-widest text-secondary/40">
+            <label className="font-mono text-[14px] uppercase tracking-widest text-secondary">
               Date & Time
             </label>
             <div className="flex gap-2">

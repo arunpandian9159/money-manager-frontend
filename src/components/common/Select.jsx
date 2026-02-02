@@ -85,7 +85,7 @@ const Select = ({
       {label && (
         <label
           htmlFor={id}
-          className="font-mono text-[10px] uppercase tracking-widest text-secondary/40"
+          className="font-mono text-[14px] uppercase tracking-widest text-secondary"
         >
           {label}
           {required && <span className="text-danger ml-1">*</span>}

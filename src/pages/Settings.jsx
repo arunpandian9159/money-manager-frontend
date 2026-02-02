@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { authAPI } from "../api";
 import { Button, Card, Input } from "../components/common";
-import { User, Shield, Sliders } from "lucide-react";
+import { User, Shield, Sliders, Camera } from "lucide-react";
 
 const Settings = () => {
   const { user, updateProfile } = useAuth();
@@ -96,32 +96,28 @@ const Settings = () => {
         </div>
       </div>
 
-      <div className="flex gap-6">
-        {/* Sidebar */}
-        <div className="w-64 shrink-0">
-          <Card
-            padding={false}
-            variant="outline"
-            className="bg-transparent border-none"
-          >
-            <div className="flex flex-col gap-1">
-              {tabs.map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-none text-left transition-all relative ${activeTab === tab.id ? "text-primary bg-primary/5" : "text-secondary/60 dark:text-background-light/60 hover:text-secondary dark:hover:text-background-light hover:bg-secondary/5"}`}
-                >
-                  {activeTab === tab.id && (
-                    <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[2px] h-4 bg-primary" />
-                  )}
-                  <tab.icon size={20} strokeWidth={1.5} />
-                  <span className="font-mono text-[10px] uppercase tracking-widest">
-                    {tab.label}
-                  </span>
-                </button>
-              ))}
-            </div>
-          </Card>
+      <div className="flex flex-col gap-8">
+        {/* Navigation Tabs */}
+        <div className="flex items-center gap-8 border-b border-secondary/5 dark:border-white/5">
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`flex items-center gap-3 pb-4 px-1 rounded-none text-left transition-all relative ${
+                activeTab === tab.id
+                  ? "text-primary"
+                  : "text-secondary/60 dark:text-background-light/60 hover:text-secondary dark:hover:text-background-light"
+              }`}
+            >
+              {activeTab === tab.id && (
+                <span className="absolute bottom-0 left-0 w-full h-[2px] bg-primary" />
+              )}
+              <tab.icon size={18} strokeWidth={1.5} />
+              <span className="font-mono text-[12px] uppercase tracking-[0.2em]">
+                {tab.label}
+              </span>
+            </button>
+          ))}
         </div>
 
         {/* Content */}
@@ -131,6 +127,27 @@ const Settings = () => {
               title="Profile Information"
               subtitle="Update your personal information"
             >
+              <div className="flex items-center justify-between mb-8 pb-8 border-b border-secondary/5 dark:border-white/5">
+                <div className="flex items-center gap-6">
+                  <div className="h-16 w-16 rounded-none bg-primary/10 flex items-center justify-center text-primary text-xl font-bold border border-primary/20 shadow-soft">
+                    {user?.firstName?.[0]}
+                    {user?.lastName?.[0]}
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-serif italic text-secondary dark:text-background-light">
+                      {user?.firstName} {user?.lastName}
+                    </h2>
+                    <p className="text-[10px] font-mono uppercase tracking-widest text-secondary/40 dark:text-background-light/40 mt-1">
+                      {user?.email}
+                    </p>
+                  </div>
+                </div>
+                <button className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-widest text-primary hover:text-primary/80 transition-all border border-primary/20 hover:border-primary/40 px-3 py-1.5 focus:outline-none">
+                  <Camera size={14} strokeWidth={1.5} />
+                  Change Photo
+                </button>
+              </div>
+
               {profileSuccess && (
                 <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg text-green-600 text-sm">
                   {profileSuccess}

@@ -1,0 +1,267 @@
+/* src/components/ui/CreditCardForm.css */
+
+.ccp {
+  width: 100%;
+  max-width: 1000px;
+  display: flex;
+  justify-content: center;
+  padding: 1.5rem;
+  background-color: transparent;
+}
+
+.wrap {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+@media (max-width: 920px) {
+  .wrap {
+    grid-template-columns: 1fr;
+  }
+}
+
+#highlight {
+  position: absolute;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 8px;
+  z-index: 10;
+  width: 0;
+  height: 0;
+  top: 0;
+  left: 0;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  pointer-events: none;
+}
+
+#highlight.highlight__number {
+  width: 92%;
+  height: 40px;
+  top: 92px;
+  left: 4%;
+}
+
+#highlight.highlight__holder {
+  width: 60%;
+  height: 56px;
+  top: 156px;
+  left: 4%;
+}
+
+#highlight.highlight__expire {
+  width: 25%;
+  height: 56px;
+  top: 156px;
+  left: 70%;
+}
+
+#highlight.highlight__cvv {
+  width: 90%;
+  height: 60px;
+  top: 105px;
+  left: 5%;
+}
+
+#highlight.hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.card {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  min-height: 233px;
+  margin: 0 auto;
+  transform-style: preserve-3d;
+  transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  perspective: 1000px;
+}
+
+.card.flip {
+  transform: rotateY(180deg);
+}
+
+.card__front,
+.card__back {
+  width: 100%;
+  height: 100%;
+  border-radius: 1.25rem;
+  padding: 1.5rem 2rem;
+  background: linear-gradient(135deg, #1e293b 0%, #0a192f 100%);
+  box-shadow: 0 25px 50px -12px rgba(10, 25, 47, 0.4);
+  color: #ffffff;
+  overflow: hidden;
+  margin: 0 auto;
+  backface-visibility: hidden;
+  position: relative;
+}
+
+.card__back {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: rotateY(180deg);
+  padding: 1.5rem 0 0;
+}
+
+.card__front::before,
+.card__back::before {
+  content: "";
+  position: absolute;
+  border: 16px solid var(--ring1, #ff6be7);
+  border-radius: 100%;
+  left: -15%;
+  top: -20%;
+  height: 250px;
+  width: 250px;
+  filter: blur(20px);
+  opacity: 0.2;
+}
+
+.card__front::after,
+.card__back::after {
+  content: "";
+  position: absolute;
+  border: 16px solid var(--ring2, #7288ff);
+  border-radius: 100%;
+  width: 250px;
+  top: 60%;
+  right: -10%;
+  height: 250px;
+  filter: blur(20px);
+  opacity: 0.2;
+}
+
+.card__hide_line {
+  height: 45px;
+  width: 100%;
+  background-color: #334155;
+  position: relative;
+  z-index: 1;
+}
+
+.card_cvv {
+  position: relative;
+  z-index: 1;
+  margin-top: 1.5rem;
+  padding: 0 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.card_cvv span {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-bottom: 0.25rem;
+  opacity: 0.8;
+}
+
+.card_cvv_field {
+  background-color: #ffffff;
+  border-radius: 0.5rem;
+  height: 44px;
+  width: 100%;
+  color: #0a192f;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 1rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+.card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  position: relative;
+  z-index: 1;
+}
+
+.card__number {
+  font-size: 1.35rem;
+  margin-bottom: 2rem;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  height: 33px;
+  overflow: hidden;
+  color: #ffffff;
+  letter-spacing: 2px;
+}
+
+.card__number .slot {
+  display: inline-flex;
+}
+
+.card__number .slot:nth-child(4n) {
+  margin-right: 14px;
+}
+
+.card__number .digit {
+  display: flex;
+  flex-direction: column;
+  height: 33px;
+  line-height: 33px;
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.card__number .digit.filed {
+  transform: translateY(-33px);
+}
+
+.card__number .row {
+  height: 33px;
+  display: block;
+  text-align: center;
+}
+
+.card__footer {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  position: relative;
+  z-index: 1;
+}
+
+.card__section__title {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  opacity: 0.7;
+  margin-bottom: 0.125rem;
+}
+
+.form {
+  background: white;
+  padding: 2rem;
+  border-radius: 0;
+  border: 1px solid rgba(10, 25, 47, 0.1);
+  box-shadow: 0 20px 40px -10px rgba(10, 25, 47, 0.05);
+}
+
+@media (max-width: 450px) {
+  .card__front,
+  .card__back {
+    padding: 1rem 1.25rem;
+    height: 200px;
+    min-height: 200px;
+  }
+
+  .card__number {
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .card__header {
+    margin-bottom: 1.5rem;
+  }
+}

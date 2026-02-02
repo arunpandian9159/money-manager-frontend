@@ -9,6 +9,8 @@ import {
   StatCard,
 } from "../components/common";
 import { accountsAPI, transactionsAPI } from "../api";
+import RegisterAccountModal from "../components/auth/RegisterAccountModal";
+
 import {
   Landmark,
   PiggyBank,
@@ -42,6 +44,8 @@ const Accounts = () => {
   const [transferModalOpen, setTransferModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [selectedAccount, setSelectedAccount] = useState(null);
+  const [registerModalOpen, setRegisterModalOpen] = useState(false);
+
   const [formData, setFormData] = useState({
     name: "",
     type: "checking",
@@ -221,7 +225,7 @@ const Accounts = () => {
           >
             Transfer Capital
           </Button>
-          <Button icon={Plus} onClick={openAddModal}>
+          <Button icon={Plus} onClick={() => setRegisterModalOpen(true)}>
             Register Account
           </Button>
         </div>
@@ -543,6 +547,15 @@ const Accounts = () => {
           </Button>
         </div>
       </Modal>
+
+      <RegisterAccountModal
+        isOpen={registerModalOpen}
+        onClose={() => setRegisterModalOpen(false)}
+        onRegisterSuccess={(data) => {
+          console.log("Registration successful:", data);
+          fetchAccounts();
+        }}
+      />
     </div>
   );
 };
