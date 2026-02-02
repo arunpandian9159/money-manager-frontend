@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { format, differenceInHours } from "date-fns";
 import { Button, Card, Modal, Input, Select } from "../components/common";
+import TransactionModal from "../components/transactions/TransactionModal";
 import { transactionsAPI, accountsAPI } from "../api";
 import {
   Fuel,
@@ -70,6 +71,7 @@ const Transactions = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [selectedTransaction, setSelectedTransaction] = useState(null);
+
   const [filters, setFilters] = useState({
     type: "",
     division: "",
@@ -89,18 +91,6 @@ const Transactions = () => {
     field: "date",
     order: "desc",
   });
-  const [formData, setFormData] = useState({
-    type: "expense",
-    amount: "",
-    description: "",
-    category: "others",
-    division: "personal",
-    date: format(new Date(), "yyyy-MM-dd"),
-    time: format(new Date(), "HH:mm"),
-    account: "",
-  });
-  const [formError, setFormError] = useState("");
-  const [saving, setSaving] = useState(false);
 
   const lastFetchCriteria = useRef({
     filters: JSON.stringify(filters),
@@ -207,17 +197,6 @@ const Transactions = () => {
 
   const openAddModal = () => {
     setSelectedTransaction(null);
-    setFormData({
-      type: "expense",
-      amount: "",
-      description: "",
-      category: "others",
-      division: "personal",
-      date: format(new Date(), "yyyy-MM-dd"),
-      time: format(new Date(), "HH:mm"),
-      account: accounts[0]?._id || "",
-    });
-    setFormError("");
     setModalOpen(true);
   };
 
@@ -227,17 +206,6 @@ const Transactions = () => {
       return;
     }
     setSelectedTransaction(tx);
-    setFormData({
-      type: tx.type,
-      amount: tx.amount.toString(),
-      description: tx.description,
-      category: tx.category,
-      division: tx.division,
-      date: format(new Date(tx.date), "yyyy-MM-dd"),
-      time: format(new Date(tx.date), "HH:mm"),
-      account: tx.account?._id || tx.account || "",
-    });
-    setFormError("");
     setModalOpen(true);
   };
 
@@ -246,32 +214,8 @@ const Transactions = () => {
     setDeleteModalOpen(true);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!formData.amount || !formData.description) {
-      setFormError("Please fill all required fields");
-      return;
-    }
-    setSaving(true);
-    try {
-      // Combine date and time into a single ISO date string
-      const dateTime = new Date(`${formData.date}T${formData.time || "00:00"}`);
-      const data = {
-        ...formData,
-        amount: parseFloat(formData.amount),
-        date: dateTime.toISOString(),
-      };
-      delete data.time; // Remove time field as it's now part of date
-      if (selectedTransaction)
-        await transactionsAPI.update(selectedTransaction._id, data);
-      else await transactionsAPI.create(data);
-      setModalOpen(false);
-      fetchTransactions();
-    } catch (err) {
-      setFormError(err.response?.data?.message || "Failed to save transaction");
-    } finally {
-      setSaving(false);
-    }
+  const handleTransactionSubmit = () => {
+    fetchTransactions(pagination.apiPage);
   };
 
   const handleDelete = async () => {
@@ -681,140 +625,13 @@ const Transactions = () => {
       </Card>
 
       {/* Add/Edit Modal */}
-      <Modal
+      <TransactionModal
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
-        title={selectedTransaction ? "Edit Transaction" : "Add Transaction"}
-      >
-        {formError && (
-          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm">
-            {formError}
-          </div>
-        )}
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          <div className="flex gap-4">
-            <label
-              className={`flex-1 flex items-center justify-center gap-2 p-3 rounded-lg border cursor-pointer ${formData.type === "income" ? "border-green-500 bg-green-50" : "border-gray-200"}`}
-            >
-              <input
-                type="radio"
-                name="type"
-                value="income"
-                checked={formData.type === "income"}
-                onChange={(e) =>
-                  setFormData({ ...formData, type: e.target.value })
-                }
-                className="hidden"
-              />
-              <TrendingUp
-                className="text-green-600"
-                size={20}
-                strokeWidth={1.5}
-              />
-              Income
-            </label>
-            <label
-              className={`flex-1 flex items-center justify-center gap-2 p-3 rounded-lg border cursor-pointer ${formData.type === "expense" ? "border-red-500 bg-red-50" : "border-gray-200"}`}
-            >
-              <input
-                type="radio"
-                name="type"
-                value="expense"
-                checked={formData.type === "expense"}
-                onChange={(e) =>
-                  setFormData({ ...formData, type: e.target.value })
-                }
-                className="hidden"
-              />
-              <TrendingDown
-                className="text-red-600"
-                size={20}
-                strokeWidth={1.5}
-              />
-              Expense
-            </label>
-          </div>
-          <Input
-            label="Amount"
-            type="number"
-            value={formData.amount}
-            onChange={(e) =>
-              setFormData({ ...formData, amount: e.target.value })
-            }
-            placeholder="0.00"
-            required
-          />
-          <Input
-            label="Description"
-            value={formData.description}
-            onChange={(e) =>
-              setFormData({ ...formData, description: e.target.value })
-            }
-            placeholder="What's this for?"
-            required
-          />
-          <div className="grid grid-cols-2 gap-4">
-            <Select
-              label="Category"
-              options={CATEGORIES}
-              value={formData.category}
-              onChange={(e) =>
-                setFormData({ ...formData, category: e.target.value })
-              }
-            />
-            <Select
-              label="Division"
-              options={[
-                { value: "personal", label: "Personal" },
-                { value: "office", label: "Office" },
-              ]}
-              value={formData.division}
-              onChange={(e) =>
-                setFormData({ ...formData, division: e.target.value })
-              }
-            />
-          </div>
-          <div className="grid grid-cols-3 gap-4">
-            <Input
-              label="Date"
-              type="date"
-              value={formData.date}
-              onChange={(e) =>
-                setFormData({ ...formData, date: e.target.value })
-              }
-            />
-            <Input
-              label="Time"
-              type="time"
-              value={formData.time}
-              onChange={(e) =>
-                setFormData({ ...formData, time: e.target.value })
-              }
-            />
-            <Select
-              label="Account"
-              options={accounts.map((a) => ({ value: a._id, label: a.name }))}
-              value={formData.account}
-              onChange={(e) =>
-                setFormData({ ...formData, account: e.target.value })
-              }
-            />
-          </div>
-          <div className="flex gap-3 mt-4">
-            <Button
-              type="button"
-              variant="secondary"
-              fullWidth
-              onClick={() => setModalOpen(false)}
-            >
-              Cancel
-            </Button>
-            <Button type="submit" fullWidth loading={saving}>
-              {selectedTransaction ? "Update" : "Add"} Transaction
-            </Button>
-          </div>
-        </form>
-      </Modal>
+        onSubmit={handleTransactionSubmit}
+        initialData={selectedTransaction}
+        accounts={accounts}
+      />
 
       {/* Delete Confirmation Modal */}
       <Modal

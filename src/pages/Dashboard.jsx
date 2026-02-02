@@ -28,6 +28,7 @@ import {
   Modal,
   Input,
 } from "../components/common";
+import TransactionModal from "../components/transactions/TransactionModal";
 import { transactionsAPI, reportsAPI, accountsAPI } from "../api";
 import {
   Fuel,
@@ -118,18 +119,6 @@ const Dashboard = () => {
   const [period, setPeriod] = useState("3months");
   const [accounts, setAccounts] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
-  const [formData, setFormData] = useState({
-    type: "expense",
-    amount: "",
-    description: "",
-    category: "others",
-    division: "personal",
-    date: format(new Date(), "yyyy-MM-dd"),
-    time: format(new Date(), "HH:mm"),
-    account: "",
-  });
-  const [formError, setFormError] = useState("");
-  const [saving, setSaving] = useState(false);
 
   // Calculate date range based on selected period
   const getDateRange = (periodValue) => {
@@ -205,43 +194,11 @@ const Dashboard = () => {
   };
 
   const openAddModal = () => {
-    setFormData({
-      type: "expense",
-      amount: "",
-      description: "",
-      category: "others",
-      division: "personal",
-      date: format(new Date(), "yyyy-MM-dd"),
-      time: format(new Date(), "HH:mm"),
-      account: accounts[0]?._id || "",
-    });
-    setFormError("");
     setModalOpen(true);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!formData.amount || !formData.description) {
-      setFormError("Please fill all required fields");
-      return;
-    }
-    setSaving(true);
-    try {
-      const dateTime = new Date(`${formData.date}T${formData.time || "00:00"}`);
-      const data = {
-        ...formData,
-        amount: parseFloat(formData.amount),
-        date: dateTime.toISOString(),
-      };
-      delete data.time;
-      await transactionsAPI.create(data);
-      setModalOpen(false);
-      fetchDashboardData();
-    } catch (err) {
-      setFormError(err.response?.data?.message || "Failed to save transaction");
-    } finally {
-      setSaving(false);
-    }
+  const handleTransactionSubmit = () => {
+    fetchDashboardData();
   };
 
   const netBalance = summary.totalIncome - summary.totalExpenses;
@@ -335,7 +292,11 @@ const Dashboard = () => {
                     paddingAngle={2}
                     label={({ name, percent }) => {
                       if (!name) return "";
-                      return `${(percent * 100).toFixed(0)}%`;
+                      const formattedName = name.replace("_", " ");
+                      const capitalized =
+                        formattedName.charAt(0).toUpperCase() +
+                        formattedName.slice(1);
+                      return `${capitalized} (${(percent * 100).toFixed(0)}%)`;
                     }}
                   >
                     {categoryData.map((entry, index) => (
@@ -558,127 +519,12 @@ const Dashboard = () => {
       </Card>
 
       {/* Add Transaction Modal */}
-      <Modal
+      <TransactionModal
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
-        title="Add Transaction"
-      >
-        {formError && (
-          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm">
-            {formError}
-          </div>
-        )}
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          <div className="flex gap-4">
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input
-                type="radio"
-                name="type"
-                value="expense"
-                checked={formData.type === "expense"}
-                onChange={(e) =>
-                  setFormData({ ...formData, type: e.target.value })
-                }
-                className="w-4 h-4 accent-red-500"
-              />
-              <span className="text-red-600 font-medium">Expense</span>
-            </label>
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input
-                type="radio"
-                name="type"
-                value="income"
-                checked={formData.type === "income"}
-                onChange={(e) =>
-                  setFormData({ ...formData, type: e.target.value })
-                }
-                className="w-4 h-4 accent-green-500"
-              />
-              <span className="text-green-600 font-medium">Income</span>
-            </label>
-          </div>
-          <Input
-            label="Amount"
-            type="number"
-            value={formData.amount}
-            onChange={(e) =>
-              setFormData({ ...formData, amount: e.target.value })
-            }
-            placeholder="0.00"
-            required
-          />
-          <Input
-            label="Description"
-            value={formData.description}
-            onChange={(e) =>
-              setFormData({ ...formData, description: e.target.value })
-            }
-            placeholder="What was this for?"
-            maxLength={100}
-            required
-          />
-          <div className="grid grid-cols-2 gap-4">
-            <Select
-              label="Category"
-              options={CATEGORIES}
-              value={formData.category}
-              onChange={(e) =>
-                setFormData({ ...formData, category: e.target.value })
-              }
-            />
-            <Select
-              label="Division"
-              options={[
-                { value: "personal", label: "Personal" },
-                { value: "office", label: "Office" },
-              ]}
-              value={formData.division}
-              onChange={(e) =>
-                setFormData({ ...formData, division: e.target.value })
-              }
-            />
-          </div>
-          <div className="grid grid-cols-3 gap-4">
-            <Input
-              label="Date"
-              type="date"
-              value={formData.date}
-              onChange={(e) =>
-                setFormData({ ...formData, date: e.target.value })
-              }
-            />
-            <Input
-              label="Time"
-              type="time"
-              value={formData.time}
-              onChange={(e) =>
-                setFormData({ ...formData, time: e.target.value })
-              }
-            />
-            <Select
-              label="Account"
-              options={accounts.map((a) => ({ value: a._id, label: a.name }))}
-              value={formData.account}
-              onChange={(e) =>
-                setFormData({ ...formData, account: e.target.value })
-              }
-            />
-          </div>
-          <div className="flex gap-3 mt-4">
-            <Button
-              type="button"
-              variant="secondary"
-              fullWidth
-              onClick={() => setModalOpen(false)}
-            >
-              Cancel
-            </Button>
-            <Button type="submit" fullWidth loading={saving}>
-              Add Transaction
-            </Button>
-          </div>
-        </form>
-      </Modal>
+        onSubmit={handleTransactionSubmit}
+        accounts={accounts}
+      />
     </div>
   );
 };

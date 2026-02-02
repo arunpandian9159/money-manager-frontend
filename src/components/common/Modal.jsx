@@ -42,14 +42,7 @@ const Modal = ({
       />
 
       {/* Modal Content */}
-      <div
-        className={`
-        relative z-10 w-full ${sizes[size]} mx-4
-        bg-white dark:bg-[#1a2332] rounded-xl shadow-2xl
-        transform transition-all
-        animate-in fade-in zoom-in-95 duration-200
-      `}
-      >
+      <div className={`relative z-10 w-full ${sizes[size]} mx-4 bg-white dark:bg-[#1a2332] rounded-xl shadow-2xl transform transition-all animate-in fade-in zoom-in-95 duration-200`}>
         {/* Header */}
         {(title || showCloseButton) && (
           <div className="flex items-center justify-between p-6 border-b border-[#f0f2f4] dark:border-gray-800">
