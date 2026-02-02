@@ -551,8 +551,8 @@ const Accounts = () => {
       <RegisterAccountModal
         isOpen={registerModalOpen}
         onClose={() => setRegisterModalOpen(false)}
-        onRegisterSuccess={(data) => {
-          console.log("Registration successful:", data);
+        onAccountCreated={(account) => {
+          console.log("Account created:", account);
           fetchAccounts();
         }}
       />

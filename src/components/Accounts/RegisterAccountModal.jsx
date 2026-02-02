@@ -3,9 +3,10 @@ import Modal from "../common/Modal";
 import CreditCardForm from "./CreditCardForm";
 import { ShieldCheck, AlertCircle } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
+import { accountsAPI } from "../../api/accounts";
 
-const RegisterAccountModal = ({ isOpen, onClose, onRegisterSuccess }) => {
-  const { register, user: currentUser } = useAuth();
+const RegisterAccountModal = ({ isOpen, onClose, onAccountCreated }) => {
+  const { user: currentUser } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -14,16 +15,26 @@ const RegisterAccountModal = ({ isOpen, onClose, onRegisterSuccess }) => {
       setLoading(true);
       setError("");
 
-      const result = await register({
-        cardData,
-      });
+      try {
+        const result = await accountsAPI.create({
+          name: cardData.holder,
+          type: "credit",
+          lastFour: cardData.number.replace(/\s/g, "").slice(-4),
+          expiryMonth: cardData.month,
+          expiryYear: cardData.year,
+          balance: 0,
+        });
 
-      setLoading(false);
-      if (result.success) {
-        onRegisterSuccess?.(result.data);
-        onClose();
-      } else {
-        setError(result.error || "Failed to establish identity.");
+        setLoading(false);
+        if (result.success) {
+          onAccountCreated?.(result.data.account);
+          onClose();
+        } else {
+          setError(result.message || "Failed to create account.");
+        }
+      } catch (err) {
+        setLoading(false);
+        setError(err.response?.data?.message || "Failed to create account.");
       }
     }
   };
@@ -37,9 +48,9 @@ const RegisterAccountModal = ({ isOpen, onClose, onRegisterSuccess }) => {
     >
       <div className="flex flex-col gap-6">
         {error && (
-          <div className="flex items-center gap-2 p-4 bg-danger/10 border border-danger/20 text-danger text-[10px] font-mono uppercase tracking-widest">
-            <AlertCircle size={14} />
-            {error}
+          <div className="flex items-center gap-2 p-4 bg-danger/10 border border-danger/20 text-danger text-[10px] font-mono uppercase tracking-widest leading-relaxed">
+            <AlertCircle size={14} className="shrink-0" />
+            <span>{error}</span>
           </div>
         )}
 
@@ -48,11 +59,11 @@ const RegisterAccountModal = ({ isOpen, onClose, onRegisterSuccess }) => {
             <ShieldCheck className="text-primary" size={24} />
             <div>
               <h4 className="text-xs font-bold uppercase tracking-wider text-secondary">
-                Secure Payment Processing
+                Secure Account Connection
               </h4>
               <p className="text-[10px] text-secondary/60 font-serif italic">
-                Your credentials are encrypted and stored in institutional-grade
-                vaults.
+                Your financial data is encrypted and managed through
+                institutional-grade protocols.
               </p>
             </div>
           </div>
