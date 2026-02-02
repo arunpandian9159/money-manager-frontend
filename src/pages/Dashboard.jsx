@@ -336,86 +336,6 @@ const Dashboard = () => {
         />
       </div>
 
-      {/* Trends Chart */}
-      <Card
-        title="Flow Velocity"
-        subtitle="Temporal trend of capital inflow vs outflow"
-      >
-        <div className="h-80">
-          {trendsData.length > 0 ? (
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={trendsData}>
-                <XAxis
-                  dataKey="date"
-                  axisLine={false}
-                  tickLine={false}
-                  tick={{
-                    fontSize: 10,
-                    fontFamily: "JetBrains Mono",
-                    fill: "#0A192F66",
-                  }}
-                  tickFormatter={(value) => {
-                    const date =
-                      value.length === 7
-                        ? new Date(value + "-01")
-                        : new Date(value);
-                    return format(date, "MMM yy");
-                  }}
-                />
-                <YAxis
-                  axisLine={false}
-                  tickLine={false}
-                  tick={{
-                    fontSize: 10,
-                    fontFamily: "JetBrains Mono",
-                    fill: "#0A192F66",
-                  }}
-                  tickFormatter={(value) => `₹${(value / 1000).toFixed(0)}k`}
-                />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: "#0A192F",
-                    border: "none",
-                    borderRadius: "0",
-                    color: "#F9F8F4",
-                    fontFamily: "JetBrains Mono",
-                    fontSize: "10px",
-                  }}
-                  formatter={(value) => `₹${value.toLocaleString()}`}
-                  labelFormatter={(label) => {
-                    const date =
-                      label.length === 7
-                        ? new Date(label + "-01")
-                        : new Date(label);
-                    return format(date, "MMMM yyyy");
-                  }}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="income"
-                  stroke="#81B29A"
-                  strokeWidth={3}
-                  name="Inflow"
-                  dot={false}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="expense"
-                  stroke="#D65A31"
-                  strokeWidth={3}
-                  name="Outflow"
-                  dot={false}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          ) : (
-            <div className="flex items-center justify-center h-full font-mono text-[10px] uppercase tracking-widest text-secondary/40">
-              No trend data available
-            </div>
-          )}
-        </div>
-      </Card>
-
       {/* Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Expense by Category */}
@@ -538,7 +458,85 @@ const Dashboard = () => {
           </div>
         </Card>
       </div>
-
+{/* Trends Chart */}
+      <Card
+        title="Flow Velocity"
+        subtitle="Temporal trend of capital inflow vs outflow"
+      >
+        <div className="h-80">
+          {trendsData.length > 0 ? (
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={trendsData}>
+                <XAxis
+                  dataKey="date"
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{
+                    fontSize: 10,
+                    fontFamily: "JetBrains Mono",
+                    fill: "#0A192F66",
+                  }}
+                  tickFormatter={(value) => {
+                    const date =
+                      value.length === 7
+                        ? new Date(value + "-01")
+                        : new Date(value);
+                    return format(date, "MMM yy");
+                  }}
+                />
+                <YAxis
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{
+                    fontSize: 10,
+                    fontFamily: "JetBrains Mono",
+                    fill: "#0A192F66",
+                  }}
+                  tickFormatter={(value) => `₹${(value / 1000).toFixed(0)}k`}
+                />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: "#0A192F",
+                    border: "none",
+                    borderRadius: "0",
+                    color: "#F9F8F4",
+                    fontFamily: "JetBrains Mono",
+                    fontSize: "10px",
+                  }}
+                  formatter={(value) => `₹${value.toLocaleString()}`}
+                  labelFormatter={(label) => {
+                    const date =
+                      label.length === 7
+                        ? new Date(label + "-01")
+                        : new Date(label);
+                    return format(date, "MMMM yyyy");
+                  }}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="income"
+                  stroke="#81B29A"
+                  strokeWidth={3}
+                  name="Inflow"
+                  dot={false}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="expense"
+                  stroke="#D65A31"
+                  strokeWidth={3}
+                  name="Outflow"
+                  dot={false}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          ) : (
+            <div className="flex items-center justify-center h-full font-mono text-[10px] uppercase tracking-widest text-secondary/40">
+              No trend data available
+            </div>
+          )}
+        </div>
+      </Card>
       {/* Recent Transactions */}
       <Card
         title="Recent Transactions"
