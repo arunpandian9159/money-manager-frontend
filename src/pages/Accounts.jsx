@@ -8,7 +8,7 @@ import {
   Select,
   StatCard,
 } from "../components/common";
-import { accountsAPI, transactionsAPI } from "../api";
+import { accountsAPI, transactionsAPI, reportsAPI } from "../api";
 import RegisterAccountModal from "../components/Accounts/RegisterAccountModal";
 
 import {
@@ -28,17 +28,20 @@ const ACCOUNT_TYPES = [
   { value: "checking", label: "Checking" },
   { value: "savings", label: "Savings" },
   { value: "credit", label: "Credit Card" },
+  { value: "current", label: "Current Account" },
 ];
 
 const ACCOUNT_ICONS = {
   checking: Landmark,
   savings: PiggyBank,
   credit: CreditCard,
+  current: Wallet,
 };
 
 const Accounts = () => {
   const [accounts, setAccounts] = useState([]);
   const [summary, setSummary] = useState({ totalBalance: 0, accountCount: 0 });
+  const [trendsData, setTrendsData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [transferModalOpen, setTransferModalOpen] = useState(false);
@@ -70,14 +73,16 @@ const Accounts = () => {
   const fetchAccounts = async () => {
     try {
       setLoading(true);
-      const [accountsRes, summaryRes] = await Promise.all([
+      const [accountsRes, summaryRes, trendsRes] = await Promise.all([
         accountsAPI.getAll(),
         accountsAPI.getSummary(),
+        reportsAPI.getTrends({ groupBy: "month" }),
       ]);
       setAccounts(accountsRes.data.accounts || []);
       setSummary(
         summaryRes.data.summary || { totalBalance: 0, accountCount: 0 },
       );
+      setTrendsData(trendsRes.data.trends || []);
     } catch (err) {
       console.error("Failed to fetch accounts:", err);
     } finally {
@@ -189,6 +194,35 @@ const Accounts = () => {
     }
   };
 
+  // Calculate real trend data and changes
+  const getTrendData = () => {
+    return trendsData.map((d) => ({
+      value: d.income - d.expense,
+    }));
+  };
+
+  const calculateChange = () => {
+    if (trendsData.length < 2) return { change: 0, type: "positive" };
+    const latest = trendsData[trendsData.length - 1];
+    const previous = trendsData[trendsData.length - 2];
+
+    const latestVal = latest.income - latest.expense;
+    const previousVal = previous.income - previous.expense;
+
+    if (previousVal === 0) return { change: 0, type: "positive" };
+
+    const change = (
+      ((latestVal - previousVal) / Math.abs(previousVal)) *
+      100
+    ).toFixed(1);
+    return {
+      change: Math.abs(change),
+      type: change >= 0 ? "positive" : "negative",
+    };
+  };
+
+  const balanceTrend = calculateChange();
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -236,20 +270,22 @@ const Accounts = () => {
         <StatCard
           title="Total Balance"
           value={`₹${summary.totalBalance?.toLocaleString() || 0}`}
-          icon={Wallet}
           iconColor="blue"
+          change={balanceTrend.change}
+          changeType={balanceTrend.type}
+          trendData={getTrendData()}
         />
         <StatCard
           title="Total Accounts"
           value={summary.accountCount || accounts.length}
-          icon={CreditCard}
           iconColor="green"
+          trendData={[]} // Static count, no trend needed or can be flat
         />
         <StatCard
           title="Average Balance"
           value={`₹${accounts.length > 0 ? Math.round(summary.totalBalance / accounts.length).toLocaleString() : 0}`}
-          icon={Calculator}
           iconColor="orange"
+          trendData={[]}
         />
       </div>
 
@@ -264,7 +300,15 @@ const Accounts = () => {
               <div className="absolute top-0 right-0 w-24 h-24 -mr-8 -mt-8 bg-secondary/5 dark:bg-white/5 rounded-full" />
               <div className="flex items-start justify-between mb-8 relative z-10">
                 <div
-                  className={`p-2 rounded-none ${account.type === "credit" ? "bg-primary/10 text-primary" : account.type === "savings" ? "bg-accent/10 text-accent" : "bg-secondary text-background-light"}`}
+                  className={`p-2 rounded-none ${
+                    account.type === "credit"
+                      ? "bg-primary/10 text-primary"
+                      : account.type === "savings"
+                        ? "bg-accent/10 text-accent"
+                        : account.type === "current"
+                          ? "bg-success/10 text-success"
+                          : "bg-secondary text-background-light"
+                  }`}
                 >
                   {(() => {
                     const Icon = ACCOUNT_ICONS[account.type];

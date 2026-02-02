@@ -15,6 +15,8 @@ import {
   ResponsiveContainer,
   BarChart,
   Bar,
+  LineChart,
+  Line,
   XAxis,
   YAxis,
   Tooltip,
@@ -115,6 +117,7 @@ const Dashboard = () => {
   const [recentTransactions, setRecentTransactions] = useState([]);
   const [categoryData, setCategoryData] = useState([]);
   const [divisionData, setDivisionData] = useState([]);
+  const [trendsData, setTrendsData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [period, setPeriod] = useState("3months");
   const [accounts, setAccounts] = useState([]);
@@ -169,7 +172,7 @@ const Dashboard = () => {
       setLoading(true);
       const dateParams = getDateRange(period);
 
-      const [summaryRes, transactionsRes, categoryRes, divisionRes] =
+      const [summaryRes, transactionsRes, categoryRes, divisionRes, trendsRes] =
         await Promise.all([
           reportsAPI.getSummary(dateParams),
           transactionsAPI.getAll({
@@ -180,12 +183,20 @@ const Dashboard = () => {
           }),
           reportsAPI.getByCategory(dateParams),
           reportsAPI.getByDivision(dateParams),
+          reportsAPI.getTrends({
+            ...dateParams,
+            groupBy:
+              period === "year" || period === "all" || period === "3months"
+                ? "month"
+                : "day",
+          }),
         ]);
 
       setSummary(summaryRes.data.summary);
       setRecentTransactions(transactionsRes.data.transactions || []);
       setCategoryData(categoryRes.data.breakdown || []);
       setDivisionData(divisionRes.data.breakdown || []);
+      setTrendsData(trendsRes.data.trends || []);
     } catch (error) {
       console.error("Failed to fetch dashboard data:", error);
     } finally {
@@ -202,6 +213,53 @@ const Dashboard = () => {
   };
 
   const netBalance = summary.totalIncome - summary.totalExpenses;
+
+  // Calculate real trend data and changes
+  const getTrendData = (key) => {
+    return trendsData.map((d) => ({
+      value:
+        key === "net"
+          ? d.income - d.expense
+          : key === "count"
+            ? d.count || 0
+            : d[key],
+    }));
+  };
+
+  const calculateChange = (key) => {
+    if (trendsData.length < 2) return { change: 0, type: "positive" };
+    const latest = trendsData[trendsData.length - 1];
+    const previous = trendsData[trendsData.length - 2];
+
+    const latestVal =
+      key === "net"
+        ? latest.income - latest.expense
+        : key === "count"
+          ? latest.count || 0
+          : latest[key];
+    const previousVal =
+      key === "net"
+        ? previous.income - previous.expense
+        : key === "count"
+          ? previous.count || 0
+          : previous[key];
+
+    if (previousVal === 0) return { change: 0, type: "positive" };
+
+    const change = (
+      ((latestVal - previousVal) / Math.abs(previousVal)) *
+      100
+    ).toFixed(1);
+    return {
+      change: Math.abs(change),
+      type: change >= 0 ? "positive" : "negative",
+    };
+  };
+
+  const incomeTrend = calculateChange("income");
+  const expenseTrend = calculateChange("expense");
+  const netTrend = calculateChange("net");
+  const countTrend = calculateChange("count");
 
   if (loading) {
     return (
@@ -247,28 +305,116 @@ const Dashboard = () => {
         <StatCard
           title="Total Income"
           value={`₹${summary.totalIncome?.toLocaleString() || 0}`}
-          icon={TrendingUp}
           iconColor="green"
+          change={incomeTrend.change}
+          changeType={incomeTrend.type}
+          trendData={getTrendData("income")}
         />
         <StatCard
           title="Total Expenses"
           value={`₹${summary.totalExpenses?.toLocaleString() || 0}`}
-          icon={TrendingDown}
           iconColor="red"
+          change={expenseTrend.change}
+          changeType={expenseTrend.type}
+          trendData={getTrendData("expense")}
         />
         <StatCard
           title="Net Balance"
           value={`₹${netBalance.toLocaleString()}`}
-          icon={Landmark}
           iconColor={netBalance >= 0 ? "green" : "red"}
+          change={netTrend.change}
+          changeType={netTrend.type}
+          trendData={getTrendData("net")}
         />
         <StatCard
           title="Transactions"
           value={summary.transactionCount || 0}
-          icon={ListOrdered}
           iconColor="blue"
+          change={countTrend.change}
+          changeType={countTrend.type}
+          trendData={getTrendData("count")}
         />
       </div>
+
+      {/* Trends Chart */}
+      <Card
+        title="Flow Velocity"
+        subtitle="Temporal trend of capital inflow vs outflow"
+      >
+        <div className="h-80">
+          {trendsData.length > 0 ? (
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={trendsData}>
+                <XAxis
+                  dataKey="date"
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{
+                    fontSize: 10,
+                    fontFamily: "JetBrains Mono",
+                    fill: "#0A192F66",
+                  }}
+                  tickFormatter={(value) => {
+                    const date =
+                      value.length === 7
+                        ? new Date(value + "-01")
+                        : new Date(value);
+                    return format(date, "MMM yy");
+                  }}
+                />
+                <YAxis
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{
+                    fontSize: 10,
+                    fontFamily: "JetBrains Mono",
+                    fill: "#0A192F66",
+                  }}
+                  tickFormatter={(value) => `₹${(value / 1000).toFixed(0)}k`}
+                />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: "#0A192F",
+                    border: "none",
+                    borderRadius: "0",
+                    color: "#F9F8F4",
+                    fontFamily: "JetBrains Mono",
+                    fontSize: "10px",
+                  }}
+                  formatter={(value) => `₹${value.toLocaleString()}`}
+                  labelFormatter={(label) => {
+                    const date =
+                      label.length === 7
+                        ? new Date(label + "-01")
+                        : new Date(label);
+                    return format(date, "MMMM yyyy");
+                  }}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="income"
+                  stroke="#81B29A"
+                  strokeWidth={3}
+                  name="Inflow"
+                  dot={false}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="expense"
+                  stroke="#D65A31"
+                  strokeWidth={3}
+                  name="Outflow"
+                  dot={false}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          ) : (
+            <div className="flex items-center justify-center h-full font-mono text-[10px] uppercase tracking-widest text-secondary/40">
+              No trend data available
+            </div>
+          )}
+        </div>
+      </Card>
 
       {/* Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

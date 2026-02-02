@@ -4,11 +4,20 @@ import CreditCardForm from "./CreditCardForm";
 import { ShieldCheck, AlertCircle } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { accountsAPI } from "../../api/accounts";
+import Select from "../common/Select";
 
 const RegisterAccountModal = ({ isOpen, onClose, onAccountCreated }) => {
   const { user: currentUser } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [accountType, setAccountType] = useState("checking");
+
+  const typeOptions = [
+    { value: "checking", label: "Checking" },
+    { value: "savings", label: "Savings" },
+    { value: "credit", label: "Credit Card" },
+    { value: "current", label: "Current Account" },
+  ];
 
   const handlePaymentSubmit = async (cardData, validity) => {
     if (validity.allValid) {
@@ -18,7 +27,7 @@ const RegisterAccountModal = ({ isOpen, onClose, onAccountCreated }) => {
       try {
         const result = await accountsAPI.create({
           name: cardData.holder,
-          type: "credit",
+          type: accountType,
           lastFour: cardData.number.replace(/\s/g, "").slice(-4),
           expiryMonth: cardData.month,
           expiryYear: cardData.year,
@@ -55,6 +64,16 @@ const RegisterAccountModal = ({ isOpen, onClose, onAccountCreated }) => {
         )}
 
         <div className="p-2">
+          <div className="mb-6">
+            <Select
+              label="Account Type"
+              options={typeOptions}
+              value={accountType}
+              onChange={(e) => setAccountType(e.target.value)}
+              placeholder="Choose account type"
+            />
+          </div>
+
           <div className="flex items-center gap-3 mb-6 p-4 bg-primary/5 border border-primary/20">
             <ShieldCheck className="text-primary" size={24} />
             <div>
