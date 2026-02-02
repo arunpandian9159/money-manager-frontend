@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { format, differenceInHours } from "date-fns";
 import { Button, Card, Modal, Input, Select } from "../components/common";
 import { transactionsAPI, accountsAPI } from "../api";
@@ -79,8 +79,10 @@ const Transactions = () => {
     endDate: "",
   });
   const [pagination, setPagination] = useState({
-    page: 1,
-    limit: 100,
+    apiPage: 1, // Page for API (100 items per page)
+    apiLimit: 100,
+    displayPage: 1, // Page for UI
+    displayLimit: 20, // 20, 50, or 100
     total: 0,
   });
   const [sort, setSort] = useState({
@@ -100,17 +102,66 @@ const Transactions = () => {
   const [formError, setFormError] = useState("");
   const [saving, setSaving] = useState(false);
 
-  useEffect(() => {
-    fetchTransactions();
-    fetchAccounts();
-  }, [filters, pagination.page, sort]);
+  const lastFetchCriteria = useRef({
+    filters: JSON.stringify(filters),
+    sort: JSON.stringify(sort),
+  });
 
-  const fetchTransactions = async () => {
+  useEffect(() => {
+    const currentFiltersStr = JSON.stringify(filters);
+    const currentSortStr = JSON.stringify(sort);
+
+    // Check if filters or sort have changed
+    const criteriaChanged =
+      lastFetchCriteria.current.filters !== currentFiltersStr ||
+      lastFetchCriteria.current.sort !== currentSortStr;
+
+    // Determine if we need to fetch from API
+    // We fetch if we don't have the data for the current displayPage OR if criteria changed
+    const itemsNeededStart =
+      (pagination.displayPage - 1) * pagination.displayLimit;
+    const itemsNeededEnd = pagination.displayPage * pagination.displayLimit;
+    const currentApiStart = (pagination.apiPage - 1) * pagination.apiLimit;
+    const currentApiEnd = pagination.apiPage * pagination.apiLimit;
+
+    const needsFetch =
+      criteriaChanged ||
+      itemsNeededStart < currentApiStart ||
+      itemsNeededEnd > currentApiEnd;
+
+    // If the displayLimit > apiLimit, we should adjust apiLimit
+    if (pagination.displayLimit > pagination.apiLimit) {
+      setPagination((prev) => ({ ...prev, apiLimit: pagination.displayLimit }));
+      return; // Next effect run will handle fetch
+    }
+
+    if (needsFetch || transactions.length === 0) {
+      const targetApiPage = criteriaChanged
+        ? 1
+        : Math.floor(itemsNeededStart / pagination.apiLimit) + 1;
+
+      // Update ref before fetch
+      lastFetchCriteria.current = {
+        filters: currentFiltersStr,
+        sort: currentSortStr,
+      };
+
+      fetchTransactions(targetApiPage);
+    }
+  }, [
+    filters,
+    pagination.displayPage,
+    pagination.displayLimit,
+    pagination.apiLimit,
+    sort,
+  ]);
+
+  const fetchTransactions = async (pageToFetch) => {
     try {
       setLoading(true);
       const params = {
-        page: pagination.page,
-        limit: pagination.limit,
+        page: pageToFetch,
+        limit: pagination.apiLimit,
         sortBy: sort.field,
         sortOrder: sort.order,
         ...Object.fromEntries(Object.entries(filters).filter(([_, v]) => v)),
@@ -119,7 +170,8 @@ const Transactions = () => {
       setTransactions(res.data.transactions || []);
       setPagination((prev) => ({
         ...prev,
-        total: res.data.pagination?.total || 0,
+        apiPage: pageToFetch,
+        total: res.data.pagination?.totalItems || 0,
       }));
     } catch (err) {
       console.error("Failed to fetch transactions:", err);
@@ -137,6 +189,10 @@ const Transactions = () => {
     }
   };
 
+  useEffect(() => {
+    fetchAccounts();
+  }, []);
+
   const canEdit = (tx) =>
     differenceInHours(new Date(), new Date(tx.createdAt)) < 12;
 
@@ -145,6 +201,8 @@ const Transactions = () => {
       field,
       order: prev.field === field && prev.order === "desc" ? "asc" : "desc",
     }));
+    // Reset to page 1 on sort change
+    setPagination((prev) => ({ ...prev, displayPage: 1 }));
   };
 
   const openAddModal = () => {
@@ -438,106 +496,116 @@ const Transactions = () => {
               </thead>
               <tbody>
                 {transactions.length > 0 ? (
-                  transactions.map((tx) => (
-                    <tr
-                      key={tx._id}
-                      className="border-b border-secondary/5 dark:border-white/5 hover:bg-secondary/5 dark:hover:bg-white/5 transition-colors group"
-                    >
-                      <td className="py-5 px-6">
-                        <div className="flex items-center gap-4">
-                          <span className="font-serif italic text-lg text-secondary dark:text-background-light">
-                            {tx.description}
-                          </span>
-                        </div>
-                      </td>
-                      <td className="py-5 px-6">
-                        <span
-                          className={`px-2 py-1 rounded-none text-[10px] font-mono uppercase tracking-widest ${
-                            tx.type === "income"
-                              ? "bg-success/10 text-success"
-                              : "bg-danger/10 text-danger"
-                          }`}
-                        >
-                          {tx.type}
-                        </span>
-                      </td>
-                      <td className="py-5 px-6 font-mono text-[11px] uppercase tracking-wider text-secondary/60 dark:text-background-light/60">
-                        <div className="flex items-center gap-2">
-                          {CATEGORY_ICONS[tx.category] ? (
-                            (() => {
-                              const Icon = CATEGORY_ICONS[tx.category];
-                              return (
-                                <Icon
-                                  size={18}
-                                  style={{
-                                    color:
-                                      CATEGORY_COLORS[tx.category] || "#90A4AE",
-                                  }}
-                                  strokeWidth={1.5}
-                                />
-                              );
-                            })()
-                          ) : (
-                            <Receipt
-                              size={18}
-                              className="text-secondary/40"
-                              strokeWidth={1.5}
-                            />
-                          )}
-                          {tx.category?.replace("_", " ")}
-                        </div>
-                      </td>
-                      <td className="py-5 px-6">
-                        <span
-                          className={`px-2 py-1 rounded-none text-[10px] font-mono uppercase tracking-widest ${tx.division === "office" ? "bg-secondary text-background-light" : "bg-accent text-white"}`}
-                        >
-                          {tx.division === "office" ? "Office" : "Personal"}
-                        </span>
-                      </td>
-                      <td className="py-5 px-6">
-                        <div className="font-mono text-[11px] text-secondary/60 dark:text-background-light/60">
-                          {format(new Date(tx.date), "MMM dd, yyyy")}
-                        </div>
-                        <div className="font-mono text-[9px] text-secondary/40 dark:text-background-light/40 mt-1">
-                          {format(new Date(tx.date), "HH:mm")}
-                        </div>
-                      </td>
-                      <td
-                        className={`py-5 px-6 text-right font-serif text-xl ${tx.type === "income" ? "text-success" : "text-secondary dark:text-background-light"}`}
+                  transactions
+                    .slice(
+                      ((pagination.displayPage - 1) * pagination.displayLimit) %
+                        pagination.apiLimit,
+                      (((pagination.displayPage - 1) *
+                        pagination.displayLimit) %
+                        pagination.apiLimit) +
+                        pagination.displayLimit,
+                    )
+                    .map((tx) => (
+                      <tr
+                        key={tx._id}
+                        className="border-b border-secondary/5 dark:border-white/5 hover:bg-secondary/5 dark:hover:bg-white/5 transition-colors group"
                       >
-                        {tx.type === "income" ? "+" : "-"}₹
-                        {tx.amount?.toLocaleString()}
-                      </td>
-                      <td className="py-5 px-6">
-                        <div className="flex justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                          {canEdit(tx) ? (
-                            <button
-                              onClick={() => openEditModal(tx)}
-                              className="p-2 rounded-none hover:bg-secondary/10 dark:hover:bg-white/10 text-secondary/60 dark:text-background-light/60"
-                              aria-label="Edit entry"
-                            >
-                              <Edit2 size={18} strokeWidth={1.5} />
-                            </button>
-                          ) : (
-                            <button
-                              disabled
-                              className="p-2 rounded-none opacity-30 cursor-not-allowed text-secondary/60"
-                              title="Temporal window closed"
-                            >
-                              <Lock size={18} strokeWidth={1.5} />
-                            </button>
-                          )}
-                          <button
-                            onClick={() => openDeleteModal(tx)}
-                            className="p-2 rounded-none hover:bg-danger/10 text-danger"
-                            aria-label="Remove entry"
+                        <td className="py-5 px-6">
+                          <div className="flex items-center gap-4">
+                            <span className="font-serif italic text-lg text-secondary dark:text-background-light">
+                              {tx.description}
+                            </span>
+                          </div>
+                        </td>
+                        <td className="py-5 px-6">
+                          <span
+                            className={`px-2 py-1 rounded-none text-[10px] font-mono uppercase tracking-widest ${
+                              tx.type === "income"
+                                ? "bg-success/10 text-success"
+                                : "bg-danger/10 text-danger"
+                            }`}
                           >
-                            <Trash2 size={18} strokeWidth={1.5} />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))
+                            {tx.type}
+                          </span>
+                        </td>
+                        <td className="py-5 px-6 font-mono text-[11px] uppercase tracking-wider text-secondary/60 dark:text-background-light/60">
+                          <div className="flex items-center gap-2">
+                            {CATEGORY_ICONS[tx.category] ? (
+                              (() => {
+                                const Icon = CATEGORY_ICONS[tx.category];
+                                return (
+                                  <Icon
+                                    size={18}
+                                    style={{
+                                      color:
+                                        CATEGORY_COLORS[tx.category] ||
+                                        "#90A4AE",
+                                    }}
+                                    strokeWidth={1.5}
+                                  />
+                                );
+                              })()
+                            ) : (
+                              <Receipt
+                                size={18}
+                                className="text-secondary/40"
+                                strokeWidth={1.5}
+                              />
+                            )}
+                            {tx.category?.replace("_", " ")}
+                          </div>
+                        </td>
+                        <td className="py-5 px-6">
+                          <span
+                            className={`px-2 py-1 rounded-none text-[10px] font-mono uppercase tracking-widest ${tx.division === "office" ? "bg-secondary text-background-light" : "bg-accent text-white"}`}
+                          >
+                            {tx.division === "office" ? "Office" : "Personal"}
+                          </span>
+                        </td>
+                        <td className="py-5 px-6">
+                          <div className="font-mono text-[11px] text-secondary/60 dark:text-background-light/60">
+                            {format(new Date(tx.date), "MMM dd, yyyy")}
+                          </div>
+                          <div className="font-mono text-[9px] text-secondary/40 dark:text-background-light/40 mt-1">
+                            {format(new Date(tx.date), "HH:mm")}
+                          </div>
+                        </td>
+                        <td
+                          className={`py-5 px-6 text-right font-serif text-xl ${tx.type === "income" ? "text-success" : "text-secondary dark:text-background-light"}`}
+                        >
+                          {tx.type === "income" ? "+" : "-"}₹
+                          {tx.amount?.toLocaleString()}
+                        </td>
+                        <td className="py-5 px-6">
+                          <div className="flex justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                            {canEdit(tx) ? (
+                              <button
+                                onClick={() => openEditModal(tx)}
+                                className="p-2 rounded-none hover:bg-secondary/10 dark:hover:bg-white/10 text-secondary/60 dark:text-background-light/60"
+                                aria-label="Edit entry"
+                              >
+                                <Edit2 size={18} strokeWidth={1.5} />
+                              </button>
+                            ) : (
+                              <button
+                                disabled
+                                className="p-2 rounded-none opacity-30 cursor-not-allowed text-secondary/60"
+                                title="Temporal window closed"
+                              >
+                                <Lock size={18} strokeWidth={1.5} />
+                              </button>
+                            )}
+                            <button
+                              onClick={() => openDeleteModal(tx)}
+                              className="p-2 rounded-none hover:bg-danger/10 text-danger"
+                              aria-label="Remove entry"
+                            >
+                              <Trash2 size={18} strokeWidth={1.5} />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
                 ) : (
                   <tr>
                     <td
@@ -552,29 +620,64 @@ const Transactions = () => {
             </table>
           </div>
         )}
-        {pagination.total > pagination.limit && (
-          <div className="flex justify-center items-center gap-6 p-6 border-t border-secondary/5 dark:border-white/5 bg-secondary/5">
+        <div className="flex flex-col sm:flex-row justify-between items-center gap-6 p-6 border-t border-secondary/5 dark:border-white/5 bg-secondary/5">
+          <div className="flex items-center gap-4">
+            <span className="font-mono text-[10px] uppercase tracking-widest text-secondary/40">
+              Rows per page
+            </span>
+            <div className="flex gap-2">
+              {[20, 50, 100].map((limit) => (
+                <button
+                  key={limit}
+                  onClick={() =>
+                    setPagination((p) => ({
+                      ...p,
+                      displayLimit: limit,
+                      displayPage: 1,
+                    }))
+                  }
+                  className={`px-3 py-1 font-mono text-[10px] border transition-colors ${
+                    pagination.displayLimit === limit
+                      ? "bg-primary border-primary text-white"
+                      : "border-secondary/20 text-secondary/60 hover:border-primary/50 hover:text-primary"
+                  }`}
+                >
+                  {limit}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex items-center gap-6">
             <Button
               variant="ghost"
               size="sm"
-              disabled={pagination.page === 1}
-              onClick={() => setPagination((p) => ({ ...p, page: p.page - 1 }))}
+              disabled={pagination.displayPage === 1}
+              onClick={() =>
+                setPagination((p) => ({ ...p, displayPage: p.displayPage - 1 }))
+              }
             >
-              Previous Page
+              Previous
             </Button>
-            <span className="font-mono text-[10px] uppercase tracking-widest text-secondary/40">
-              Sequence {pagination.page}
+            <span className="font-mono text-[10px] uppercase tracking-widest text-secondary/40 whitespace-nowrap">
+              Page {pagination.displayPage} of{" "}
+              {Math.ceil(pagination.total / pagination.displayLimit) || 1}
             </span>
             <Button
               variant="ghost"
               size="sm"
-              disabled={pagination.page * pagination.limit >= pagination.total}
-              onClick={() => setPagination((p) => ({ ...p, page: p.page + 1 }))}
+              disabled={
+                pagination.displayPage * pagination.displayLimit >=
+                pagination.total
+              }
+              onClick={() =>
+                setPagination((p) => ({ ...p, displayPage: p.displayPage + 1 }))
+              }
             >
-              Next Page
+              Next
             </Button>
           </div>
-        )}
+        </div>
       </Card>
 
       {/* Add/Edit Modal */}

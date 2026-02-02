@@ -17,6 +17,7 @@ import {
 } from "recharts";
 import { Card, Select, StatCard } from "../components/common";
 import { reportsAPI } from "../api";
+import { TrendingUp, TrendingDown, PiggyBank, Percent } from "lucide-react";
 
 const COLORS = [
   "#D65A31", // Terracotta
@@ -132,25 +133,25 @@ const Reports = () => {
         <StatCard
           title="Total Income"
           value={`₹${summary.totalIncome?.toLocaleString() || 0}`}
-          icon="trending_up"
+          icon={TrendingUp}
           iconColor="green"
         />
         <StatCard
           title="Total Expenses"
           value={`₹${summary.totalExpenses?.toLocaleString() || 0}`}
-          icon="trending_down"
+          icon={TrendingDown}
           iconColor="red"
         />
         <StatCard
           title="Net Savings"
           value={`₹${netBalance.toLocaleString()}`}
-          icon="savings"
+          icon={PiggyBank}
           iconColor={netBalance >= 0 ? "green" : "red"}
         />
         <StatCard
           title="Savings Rate"
           value={`${savingsRate}%`}
-          icon="percent"
+          icon={Percent}
           iconColor="blue"
         />
       </div>
