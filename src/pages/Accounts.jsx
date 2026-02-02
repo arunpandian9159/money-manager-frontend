@@ -9,7 +9,7 @@ import {
   StatCard,
 } from "../components/common";
 import { accountsAPI, transactionsAPI } from "../api";
-import RegisterAccountModal from "../components/auth/RegisterAccountModal";
+import RegisterAccountModal from "../components/Accounts/RegisterAccountModal";
 
 import {
   Landmark,
