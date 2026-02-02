@@ -223,7 +223,7 @@ const Transactions = () => {
           </p>
         </div>
         <Button icon="add" onClick={openAddModal}>
-          New Entry
+          Add Transaction
         </Button>
       </div>
 

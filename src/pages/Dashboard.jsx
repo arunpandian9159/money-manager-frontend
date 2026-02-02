@@ -64,6 +64,19 @@ const CATEGORY_ICONS = {
   others: "more_horiz",
 };
 
+const CATEGORY_COLORS = {
+  fuel: "#FF5252",
+  food: "#FFB300",
+  entertainment: "#7C4DFF",
+  medical: "#00E676",
+  transportation: "#40C4FF",
+  loan_emi: "#FF4081",
+  shopping: "#FFD740",
+  utilities: "#64FFDA",
+  education: "#536DFE",
+  others: "#90A4AE",
+};
+
 const COLORS = [
   "#D65A31", // Terracotta
   "#0A192F", // Navy
@@ -230,14 +243,14 @@ const Dashboard = () => {
         <div>
           <div className="flex items-center gap-4 mb-2">
             <span className="h-[1px] w-8 bg-primary"></span>
-            <span className="font-mono text-[10px] text-primary uppercase tracking-widest">
+            <span className="font-mono text-[12px] text-primary uppercase tracking-widest">
               Executive Overview
             </span>
           </div>
           <h1 className="text-4xl font-bold text-secondary dark:text-background-light uppercase tracking-tight">
             Dashboard
           </h1>
-          <p className="font-serif italic text-secondary/60 dark:text-background-light/60 mt-2">
+          <p className="font-serif italic text-lg text-secondary/60 dark:text-background-light/60 mt-2">
             Welcome back. Here is the current state of your capital.
           </p>
         </div>
@@ -249,7 +262,7 @@ const Dashboard = () => {
             className="w-48"
           />
           <Button icon="add" onClick={openAddModal}>
-            New Entry
+            Add Transaction
           </Button>
         </div>
       </div>
@@ -330,7 +343,7 @@ const Dashboard = () => {
                 </PieChart>
               </ResponsiveContainer>
             ) : (
-              <div className="flex items-center justify-center h-full font-mono text-[10px] uppercase tracking-widest text-secondary/40">
+              <div className="flex items-center justify-center h-full font-mono text-[12px] uppercase tracking-widest text-secondary/40">
                 Data non-existent
               </div>
             )}
@@ -351,7 +364,7 @@ const Dashboard = () => {
                     axisLine={false}
                     tickLine={false}
                     tick={{
-                      fontSize: 10,
+                      fontSize: 12,
                       fontFamily: "JetBrains Mono",
                       fill: "#0A192F66",
                     }}
@@ -360,7 +373,7 @@ const Dashboard = () => {
                     axisLine={false}
                     tickLine={false}
                     tick={{
-                      fontSize: 10,
+                      fontSize: 12,
                       fontFamily: "JetBrains Mono",
                       fill: "#0A192F66",
                     }}
@@ -374,7 +387,7 @@ const Dashboard = () => {
                       borderRadius: "0",
                       color: "#F9F8F4",
                       fontFamily: "JetBrains Mono",
-                      fontSize: "10px",
+                      fontSize: "12px",
                     }}
                     formatter={(value) => `₹${value.toLocaleString()}`}
                   />
@@ -414,23 +427,26 @@ const Dashboard = () => {
         }
       >
         <div className="overflow-x-auto">
-          <table className="w-full">
+          <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="border-b border-[#f0f2f4] dark:border-gray-800">
-                <th className="text-left py-3 px-4 text-sm font-medium text-[#617089]">
+              <tr className="border-b border-secondary/5 dark:border-white/5">
+                <th className="py-4 px-6 font-mono text-[12px] uppercase tracking-widest text-secondary/40">
                   Description
                 </th>
-                <th className="text-left py-3 px-4 text-sm font-medium text-[#617089]">
-                  Category
+                <th className="py-4 px-6 font-mono text-[12px] uppercase tracking-widest text-secondary/40">
+                  Type
                 </th>
-                <th className="text-left py-3 px-4 text-sm font-medium text-[#617089]">
-                  Division
+                <th className="py-4 px-6 font-mono text-[12px] uppercase tracking-widest text-secondary/40">
+                  Domain
                 </th>
-                <th className="text-left py-3 px-4 text-sm font-medium text-[#617089]">
-                  Date
+                <th className="py-4 px-6 font-mono text-[12px] uppercase tracking-widest text-secondary/40">
+                  Sector
                 </th>
-                <th className="text-right py-3 px-4 text-sm font-medium text-[#617089]">
-                  Amount
+                <th className="py-4 px-6 font-mono text-[12px] uppercase tracking-widest text-secondary/40">
+                  Temporal
+                </th>
+                <th className="py-4 px-6 font-mono text-[12px] uppercase tracking-widest text-secondary/40 text-right">
+                  Magnitude
                 </th>
               </tr>
             </thead>
@@ -439,35 +455,56 @@ const Dashboard = () => {
                 recentTransactions.map((tx) => (
                   <tr
                     key={tx._id}
-                    className="border-b border-[#f0f2f4] dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-white/5"
+                    className="border-b border-secondary/5 dark:border-white/5 hover:bg-secondary/5 dark:hover:bg-white/5 transition-colors group"
                   >
-                    <td className="py-3 px-4">
-                      <div className="flex items-center gap-3">
-                        <span
-                          className={`material-symbols-outlined p-2 rounded-lg ${tx.type === "income" ? "bg-green-50 text-green-600" : "bg-red-50 text-red-600"}`}
-                        >
-                          {CATEGORY_ICONS[tx.category] || "receipt"}
-                        </span>
-                        <span className="font-medium text-[#111318] dark:text-white">
+                    <td className="py-5 px-6">
+                      <div className="flex items-center gap-4">
+                        <span className="font-serif italic text-xl text-secondary dark:text-background-light">
                           {tx.description}
                         </span>
                       </div>
                     </td>
-                    <td className="py-3 px-4 text-sm text-[#617089] capitalize">
-                      {tx.category?.replace("_", " ")}
-                    </td>
-                    <td className="py-3 px-4">
+                    <td className="py-5 px-6">
                       <span
-                        className={`px-2 py-1 rounded-full text-xs font-medium ${tx.division === "office" ? "bg-blue-50 text-blue-600" : "bg-purple-50 text-purple-600"}`}
+                        className={`px-2 py-1 rounded-none text-[12px] font-mono uppercase tracking-widest ${
+                          tx.type === "income"
+                            ? "bg-success/10 text-success"
+                            : "bg-danger/10 text-danger"
+                        }`}
                       >
-                        {tx.division}
+                        {tx.type}
                       </span>
                     </td>
-                    <td className="py-3 px-4 text-sm text-[#617089]">
-                      {format(new Date(tx.date), "MMM dd, yyyy")}
+                    <td className="py-5 px-6 font-mono text-[13px] uppercase tracking-wider text-secondary/60 dark:text-background-light/60">
+                      <div className="flex items-center gap-2">
+                        <span
+                          className="material-symbols-outlined text-[20px]"
+                          style={{
+                            color: CATEGORY_COLORS[tx.category] || "#90A4AE",
+                          }}
+                        >
+                          {CATEGORY_ICONS[tx.category] || "receipt"}
+                        </span>
+                        {tx.category?.replace("_", " ")}
+                      </div>
+                    </td>
+                    <td className="py-5 px-6">
+                      <span
+                        className={`px-2 py-1 rounded-none text-[12px] font-mono uppercase tracking-widest ${tx.division === "office" ? "bg-secondary text-background-light" : "bg-accent text-white"}`}
+                      >
+                        {tx.division === "office" ? "Office" : "Personal"}
+                      </span>
+                    </td>
+                    <td className="py-5 px-6">
+                      <div className="font-mono text-[13px] text-secondary/60 dark:text-background-light/60">
+                        {format(new Date(tx.date), "MMM dd, yyyy")}
+                      </div>
+                      <div className="font-mono text-[11px] text-secondary/40 dark:text-background-light/40 mt-1">
+                        {format(new Date(tx.date), "HH:mm")}
+                      </div>
                     </td>
                     <td
-                      className={`py-3 px-4 text-right font-bold ${tx.type === "income" ? "text-green-600" : "text-[#111318] dark:text-white"}`}
+                      className={`py-5 px-6 text-right font-serif text-2xl ${tx.type === "income" ? "text-success" : "text-secondary dark:text-background-light"}`}
                     >
                       {tx.type === "income" ? "+" : "-"}₹
                       {tx.amount?.toLocaleString()}
@@ -476,8 +513,11 @@ const Dashboard = () => {
                 ))
               ) : (
                 <tr>
-                  <td colSpan="5" className="py-8 text-center text-[#617089]">
-                    No transactions yet. Add your first transaction!
+                  <td
+                    colSpan="6"
+                    className="py-12 text-center font-mono text-[12px] uppercase tracking-widest text-secondary/40"
+                  >
+                    No records found in this domain
                   </td>
                 </tr>
               )}
